@@ -17,7 +17,7 @@ class Auth extends StatelessWidget {
               Tab(text: "Register"),
             ],
           ),
-          title: const Text('Tabs Demo'),
+          title: const Text(''),
         ),
         body: TabBarView(
           children: [
