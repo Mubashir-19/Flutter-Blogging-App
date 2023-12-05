@@ -7,7 +7,11 @@ class Blog extends StatelessWidget {
   final String author;
   final String text;
 
-  Blog({required this.title, required this.author, required this.text});
+  const Blog(
+      {super.key,
+      required this.title,
+      required this.author,
+      required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +22,7 @@ class Blog extends StatelessWidget {
         foregroundColor: Colors.white70,
         title: Text(
           title,
+          maxLines: 2,
         ),
       ),
       body: Padding(

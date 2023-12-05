@@ -17,7 +17,9 @@ class Register extends StatelessWidget {
           children: <Widget>[
             TextFormField(
               controller: remail,
+              style: const TextStyle(color: Colors.white70),
               decoration: const InputDecoration(
+                hintStyle: TextStyle(color: Colors.white38),
                 hintText: 'Enter your Full Name',
               ),
               validator: (String? value) {
@@ -29,7 +31,9 @@ class Register extends StatelessWidget {
             ),
             TextFormField(
               controller: rname,
+              style: const TextStyle(color: Colors.white70),
               decoration: const InputDecoration(
+                hintStyle: TextStyle(color: Colors.white38),
                 hintText: 'Enter your email',
               ),
               validator: (String? value) {
@@ -42,7 +46,9 @@ class Register extends StatelessWidget {
             TextFormField(
               controller: rpassword,
               obscureText: true,
+              style: const TextStyle(color: Colors.white70),
               decoration: const InputDecoration(
+                hintStyle: TextStyle(color: Colors.white38),
                 hintText: 'Enter your Password',
               ),
               validator: (String? value) {
@@ -55,6 +61,9 @@ class Register extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(vertical: 16.0),
               child: ElevatedButton(
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateColor.resolveWith(
+                        (states) => Color(0xffe8e8e8))),
                 onPressed: () {
                   // Validate will return true if the form is valid, or false if
                   // the form is invalid.

@@ -10,11 +10,15 @@ class Auth extends StatelessWidget {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
+        backgroundColor: const Color.fromARGB(255, 33, 33, 33),
         appBar: AppBar(
+          backgroundColor: const Color.fromARGB(255, 33, 33, 33),
+          foregroundColor: Colors.white,
+          titleTextStyle: const TextStyle(fontWeight: FontWeight.bold),
           bottom: const TabBar(
             tabs: [
-              Tab(text: "Login"),
-              Tab(text: "Register"),
+              Tab(text: "Login", icon: Icon(Icons.login)),
+              Tab(text: "Register", icon: Icon(Icons.app_registration_rounded)),
             ],
           ),
           title: const Text(''),

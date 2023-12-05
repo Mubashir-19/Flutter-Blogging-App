@@ -1,91 +1,87 @@
 import 'package:flutter/material.dart';
-import 'package:se_project/widgets/postwidget.dart';
-import 'package:se_project/widgets/tagbar.dart';
-import 'auth.dart';
-import 'classes/comment.dart';
-import 'classes/post.dart';
+import 'package:se_project/widgets/account.dart';
+import 'package:se_project/widgets/createBlog.dart';
+import 'package:se_project/widgets/searchpage.dart';
 import 'widgets/HomeFeed.dart';
 // import 'widgets/tags.dart';
 
 class Home extends StatefulWidget {
   final double statusBarHeight;
+  final String email;
+  final String username;
 
   int selectedBottomButton = 0;
+  final PageController _pageController = PageController(initialPage: 0);
   // Use the named parameter syntax for the constructor
-  Home({Key? key, required this.statusBarHeight}) : super(key: key);
+  Home(
+      {Key? key,
+      required this.statusBarHeight,
+      required this.email,
+      required this.username})
+      : super(key: key);
 
   @override
   State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
-  void setBottomButton(int num) {
-    setState(() => widget.selectedBottomButton = num);
-  }
-
   @override
   Widget build(BuildContext context) {
     // print(statusBarHeight);
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize:
-            Size.fromHeight(MediaQuery.of(context).size.height * 0.23),
-        child: Container(
-          padding: EdgeInsets.only(top: widget.statusBarHeight),
-          height: MediaQuery.of(context).size.height * 0.23,
-          color: Colors.black87,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 30),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(
-                          left: MediaQuery.of(context).size.width * 0.05),
-                      child: const Text(
-                        "Home",
-                        style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                          right: MediaQuery.of(context).size.width * 0.05),
-                      child: const Icon(
-                        Icons.notifications,
-                        color: Colors.white70,
-                      ),
-                    ),
-                  ],
-                ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CreateBlog(widget.email),
               ),
-              SizedBox(
-                height: 30,
-                width: MediaQuery.of(context).size.width,
-                child: MyTabBar(),
-              )
+            );
+          },
+          tooltip: 'Add Blog',
+          shape: const CircleBorder(),
+          mini: true,
+          backgroundColor: Colors.green,
+          child: const Icon(
+            Icons.edit_square,
+            size: 20,
+          ),
+        ),
+        body: Container(
+          padding: EdgeInsets.only(top: widget.statusBarHeight),
+          color: Colors.black87,
+          // height: MediaQuery.of(context).size.height * 0.20,
+          child: PageView(
+            // scrollBehavior: CupertinoScrollBehavior(),
+            controller: widget._pageController,
+            onPageChanged: (value) {
+              return setState(() {
+                widget.selectedBottomButton = value;
+              });
+            },
+            children: [
+              const HomeFeed(),
+              const SearchPage(),
+              Account(email: widget.email, username: widget.username)
             ],
           ),
         ),
-      ),
-      body: Column(children: [
-        const HomeFeed(),
-        Container(
+        bottomNavigationBar: Container(
           color: Colors.black87,
           height: MediaQuery.of(context).size.height * 0.07,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               IconButton(
-                onPressed: () => {setBottomButton(0)},
+                onPressed: () => {
+                  widget._pageController.animateToPage(0,
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.ease)
+                },
                 icon: widget.selectedBottomButton == 0
                     ? const Icon(
                         Icons.home,
+                        size: 30,
                         color: Colors.white70,
                       )
                     : const Icon(
@@ -94,36 +90,32 @@ class _HomeState extends State<Home> {
                       ),
               ),
               IconButton(
-                  onPressed: () => {setBottomButton(1)},
+                  onPressed: () => {
+                        widget._pageController.animateToPage(1,
+                            duration: const Duration(milliseconds: 500),
+                            curve: Curves.ease)
+                      },
                   icon: widget.selectedBottomButton == 1
                       ? const Icon(
                           Icons.search,
                           color: Color.fromARGB(255, 233, 233, 233),
                           weight: 100,
-                          size: 25,
+                          size: 30,
                         )
                       : const Icon(
                           Icons.search,
                           color: Colors.white70,
-                          size: 23,
                         )),
-              // IconButton(
-              //   onPressed: () => {setBottomButton(2)},
-              //   icon: widget.selectedBottomButton == 2
-              //       ? const Icon(
-              //           Icons.library_books,
-              //           color: Colors.white70,
-              //         )
-              //       : const Icon(
-              //           Icons.library_books_outlined,
-              //           color: Colors.white70,
-              //         ),
-              // ),
               IconButton(
-                onPressed: () => {setBottomButton(3)},
-                icon: widget.selectedBottomButton == 3
+                onPressed: () => {
+                  widget._pageController.animateToPage(2,
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.ease)
+                },
+                icon: widget.selectedBottomButton == 2
                     ? const Icon(
                         Icons.account_circle,
+                        size: 30,
                         color: Colors.white70,
                       )
                     : const Icon(
@@ -134,7 +126,23 @@ class _HomeState extends State<Home> {
             ],
           ),
         )
-      ]),
-    );
+
+        // BottomNavigationBar (
+        //   // iconSize: 5,
+        //   // fixedColor: Colors.black,
+        //   key: widget.bottomNavigationBarKey,
+        //   backgroundColor: const Color.fromARGB(221, 113, 66, 66),
+        //   currentIndex: _currentIndex,
+        //   items: _bottomNavigationBarItems,
+        //   onTap: (index) {
+        //     setState(() {
+        //       _currentIndex = index;
+        //     });
+        //   },
+        // ),
+        // body: Column(children: [
+        //   const HomeFeed(),
+
+        );
   }
 }

@@ -9,6 +9,7 @@ class PostWidget extends StatelessWidget {
   final String author;
   final String text;
   final String description;
+  // final List<String> tags;
   final String id;
   final DateTime date = DateTime.now();
   final int upvotes;
@@ -42,37 +43,71 @@ class PostWidget extends StatelessWidget {
       },
       child: Container(
           // margin: const EdgeInsets.only(top: 10, bottom: 10),
-          height: 100,
+          height: 110,
           padding: const EdgeInsets.only(left: 20),
           decoration: const BoxDecoration(
-              border: Border(bottom: BorderSide(color: Colors.white12))),
+              border: Border(
+            bottom: BorderSide(color: Colors.white12),
+            // top: BorderSide(color: Colors.white12)
+          )),
           child: Row(
             children: [
-              const Icon(
-                Icons.account_circle_sharp,
-                color: Colors.white70,
-                size: 50,
+              const Expanded(
+                flex: 2,
+                child: Icon(
+                  Icons.image,
+                  color: Colors.white70,
+                  size: 50,
+                ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 10.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                          color: Colors.white70, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.65,
-                        height: 40,
-                        child: Text(description,
-                            maxLines: 3,
-                            overflow: TextOverflow.fade,
-                            style: const TextStyle(
-                                fontSize: 10, color: Colors.white70)))
-                  ],
+              Expanded(
+                flex: 8,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 10.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.account_circle_sharp,
+                            size: 12,
+                            weight: 1,
+                            color: Colors.white70,
+                          ),
+                          const SizedBox(
+                            width: 2,
+                          ),
+                          Text(author,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.normal,
+                                fontSize: 8,
+                                color: Colors.white70,
+                              )),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2, bottom: 2),
+                        child: Text(
+                          title,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                          style: const TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15),
+                        ),
+                      ),
+                      SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.65,
+                          child: Text(description,
+                              maxLines: 3,
+                              overflow: TextOverflow.fade,
+                              style: const TextStyle(
+                                  fontSize: 10, color: Colors.white70))),
+                    ],
+                  ),
                 ),
               )
             ],

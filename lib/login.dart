@@ -1,7 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:se_project/main.dart';
 import 'dart:convert';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: must_be_immutable
 class Login extends StatelessWidget {
@@ -34,7 +37,9 @@ class Login extends StatelessWidget {
           children: <Widget>[
             TextFormField(
               controller: semail,
+              style: const TextStyle(color: Colors.white70),
               decoration: const InputDecoration(
+                hintStyle: TextStyle(color: Colors.white38),
                 hintText: 'Enter your email',
               ),
               validator: (String? value) {
@@ -46,8 +51,10 @@ class Login extends StatelessWidget {
             ),
             TextFormField(
               controller: spassword,
+              style: const TextStyle(color: Colors.white70),
               obscureText: true,
               decoration: const InputDecoration(
+                hintStyle: TextStyle(color: Colors.white38),
                 hintText: 'Enter your Password',
               ),
               validator: (String? value) {
@@ -60,13 +67,24 @@ class Login extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   // Validate will return true if the form is valid, or false if
                   // the form is invalid.
                   if (_signinkey.currentState!.validate()) {
                     // print(semail.text + spassword.text);
-
-                    sendPostRequest();
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    prefs.setString('email', semail.text);
+                    prefs.setString('username', spassword.text);
+                    if (!context.mounted) return;
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SplashScreen(
+                                statusBarHeight: 10,
+                              )),
+                    );
+                    // sendPostRequest();
                   }
                 },
                 child: const Text('Submit'),
