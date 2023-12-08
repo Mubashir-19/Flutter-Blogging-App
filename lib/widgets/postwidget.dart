@@ -9,6 +9,7 @@ class PostWidget extends StatelessWidget {
   final String author;
   final String text;
   final String description;
+  final String image;
   // final List<String> tags;
   final String id;
   final DateTime date = DateTime.now();
@@ -17,6 +18,7 @@ class PostWidget extends StatelessWidget {
 
   PostWidget({
     super.key,
+    required this.image,
     required this.title,
     required this.description,
     required this.author,
@@ -34,6 +36,7 @@ class PostWidget extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => Blog(
+              image: image,
               title: title,
               author: author,
               text: text,
@@ -44,7 +47,7 @@ class PostWidget extends StatelessWidget {
       child: Container(
           // margin: const EdgeInsets.only(top: 10, bottom: 10),
           height: 110,
-          padding: const EdgeInsets.only(left: 20),
+          padding: const EdgeInsets.only(left: 10),
           decoration: const BoxDecoration(
               border: Border(
             bottom: BorderSide(color: Colors.white12),
@@ -52,13 +55,24 @@ class PostWidget extends StatelessWidget {
           )),
           child: Row(
             children: [
-              const Expanded(
-                flex: 2,
-                child: Icon(
-                  Icons.image,
-                  color: Colors.white70,
-                  size: 50,
+              Expanded(
+                flex: 3,
+                child: SizedBox(
+                  height: 60,
+                  // decoration: BoxDecoration(
+                  //   border: Border.all(color: Colors.black, width: 2.0),
+                  // ),
+                  child: Image(
+                    image: NetworkImage(image),
+                    fit: BoxFit.fitHeight,
+                    alignment: Alignment.topCenter,
+                  ),
                 ),
+                //   child: Icon(
+                //     Icons.image,
+                //     color: Colors.white70,
+                //     size: 50,
+                //   ),
               ),
               Expanded(
                 flex: 8,

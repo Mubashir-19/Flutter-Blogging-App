@@ -1,9 +1,12 @@
+// import 'dart:js_util';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'Login.dart';
-import 'Register.dart';
+import "register.dart";
 
 class Auth extends StatelessWidget {
-  const Auth({super.key});
+  Auth({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +32,7 @@ class Auth extends StatelessWidget {
               padding: const EdgeInsets.all(20.0),
               child: Login(),
             ),
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Register(),
-            ),
+            Padding(padding: const EdgeInsets.all(20.0), child: Register()),
           ],
         ),
       ),

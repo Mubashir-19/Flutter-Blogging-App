@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:se_project/widgets/account.dart';
 import 'package:se_project/widgets/createBlog.dart';
@@ -9,15 +11,16 @@ class Home extends StatefulWidget {
   final double statusBarHeight;
   final String email;
   final String username;
-
-  int selectedBottomButton = 0;
+  final String authorid;
   final PageController _pageController = PageController(initialPage: 0);
   // Use the named parameter syntax for the constructor
+
   Home(
       {Key? key,
       required this.statusBarHeight,
       required this.email,
-      required this.username})
+      required this.username,
+      required this.authorid})
       : super(key: key);
 
   @override
@@ -25,16 +28,56 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  int selectedBottomButton = 0;
+  late Future<void> asyncInitialization;
+  late var items = [];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    asyncInitialization = getItems();
+  }
+
+  Future<void> getItems() async {
+    var response =
+        await http.get(Uri.parse("http://192.168.100.9:4000/getall"));
+
+    // print(response);
+    await Future.delayed(const Duration(seconds: 3));
+    if (response.statusCode == 200) {
+      items = json.decode(response.body);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // print(statusBarHeight);
+    // print(widget.items);
     return Scaffold(
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
+          onPressed: () async {
+            // final response = await http.post(
+            //   Uri.parse('http://192.168.100.9:4000/signup'),
+            //   headers: {'Content-Type': 'application/json'},
+            //   body: jsonEncode({
+            //     "a": "123"
+            //     // Your request body here
+            //   }),
+            // );
+
+            // if (response.statusCode == 200) {
+            //   print('Response: ${response.body}');
+            // } else {
+            //   print('Request failed with status: ${response.statusCode}');
+            // }
+
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => CreateBlog(widget.email),
+                builder: (context) => CreateBlog(
+                  author: widget.email,
+                  authorid: widget.authorid,
+                ),
               ),
             );
           },
@@ -47,24 +90,45 @@ class _HomeState extends State<Home> {
             size: 20,
           ),
         ),
-        body: Container(
-          padding: EdgeInsets.only(top: widget.statusBarHeight),
-          color: Colors.black87,
-          // height: MediaQuery.of(context).size.height * 0.20,
-          child: PageView(
-            // scrollBehavior: CupertinoScrollBehavior(),
-            controller: widget._pageController,
-            onPageChanged: (value) {
-              return setState(() {
-                widget.selectedBottomButton = value;
-              });
-            },
-            children: [
-              const HomeFeed(),
-              const SearchPage(),
-              Account(email: widget.email, username: widget.username)
-            ],
-          ),
+        body: FutureBuilder<void>(
+          future: asyncInitialization,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              // While waiting for the async initialization to complete, show a loading indicator
+              return const Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: Color.fromARGB(221, 86, 86, 86),
+                  color: Colors.white70,
+                ),
+              );
+            } else if (snapshot.hasError) {
+              // If there's an error during initialization, handle it here
+              return Center(
+                child: Text('Error: ${snapshot.error}'),
+              );
+            } else {
+              // If the async initialization is complete, build the actual widget tree
+              return Container(
+                padding: EdgeInsets.only(top: widget.statusBarHeight),
+                color: Colors.black87,
+                // height: MediaQuery.of(context).size.height * 0.20,
+                child: PageView(
+                  // scrollBehavior: CupertinoScrollBehavior(),
+                  controller: widget._pageController,
+                  onPageChanged: (value) {
+                    return setState(() {
+                      selectedBottomButton = value;
+                    });
+                  },
+                  children: [
+                    HomeFeed(items: items),
+                    SearchPage(items: items),
+                    Account(email: widget.email, username: widget.username)
+                  ],
+                ),
+              );
+            }
+          },
         ),
         bottomNavigationBar: Container(
           color: Colors.black87,
@@ -78,7 +142,7 @@ class _HomeState extends State<Home> {
                       duration: const Duration(milliseconds: 500),
                       curve: Curves.ease)
                 },
-                icon: widget.selectedBottomButton == 0
+                icon: selectedBottomButton == 0
                     ? const Icon(
                         Icons.home,
                         size: 30,
@@ -95,7 +159,7 @@ class _HomeState extends State<Home> {
                             duration: const Duration(milliseconds: 500),
                             curve: Curves.ease)
                       },
-                  icon: widget.selectedBottomButton == 1
+                  icon: selectedBottomButton == 1
                       ? const Icon(
                           Icons.search,
                           color: Color.fromARGB(255, 233, 233, 233),
@@ -112,7 +176,7 @@ class _HomeState extends State<Home> {
                       duration: const Duration(milliseconds: 500),
                       curve: Curves.ease)
                 },
-                icon: widget.selectedBottomButton == 2
+                icon: selectedBottomButton == 2
                     ? const Icon(
                         Icons.account_circle,
                         size: 30,

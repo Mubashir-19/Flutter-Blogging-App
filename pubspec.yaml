@@ -28,6 +28,10 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  image: ^3.0.1
+  flutter_image_compress: 2.1.0
+  image_picker: ^1.0.4
+  quickalert:
   path: ^1.8.0 
   shared_preferences: ^2.0.0
   flutter:

@@ -1,21 +1,108 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:path/path.dart' as path;
-
+import 'dart:ui';
+import 'package:image_picker/image_picker.dart';
+import 'package:image/image.dart' as img;
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
+import 'package:se_project/widgets/imagePicker.dart';
 
 class CreateBlog extends StatelessWidget {
-  String author;
-  CreateBlog(this.author, {super.key});
+  final String author;
+  final String authorid;
+  CreateBlog({super.key, required this.author, required this.authorid});
   final GlobalKey<FormState> _registerkey = GlobalKey<FormState>();
 
   TextEditingController title = TextEditingController(text: '');
   TextEditingController description = TextEditingController(text: '');
   TextEditingController text = TextEditingController(text: '');
+  TextEditingController tags = TextEditingController(text: '');
+
+  late XFile image;
+
+//   Future<String> cropAndCompressImage(XFile imageFile) async {
+//     // Load the image using the image package
+//     List<int> bytes = await imageFile.readAsBytes();
+//     img.Image? originalImage = img.decodeImage(Uint8List.fromList(bytes));
+//     // Get original image dimensions
+//     int originalWidth = originalImage!.width;
+//     int originalHeight = originalImage.height;
+
+//     // Scale the image up if the resolution is lower than the target crop size
+//     double scale = 1.0;
+//     if (originalWidth < 1280 || originalHeight < 720) {
+//       scale = 1280 / originalWidth;
+//       if (originalHeight * scale < 720) {
+//         scale = 720 / originalHeight;
+//       }
+//     }
+
+//     // Apply scaling if needed
+//     if (scale != 1.0) {
+//       originalImage =
+//           img.copyResize(originalImage, width: (originalWidth * scale).round());
+//     }
+//     // Crop the image to 1280x720
+//     img.Image croppedImage = img.copyCrop(originalImage!, 0, 0, 1280, 720);
+
+//     // Compress the image
+//     List<int> compressedBytes = await FlutterImageCompress.compressWithList(
+//       croppedImage.getBytes(),
+//       quality: 85, // Adjust the quality as needed (0 to 100)
+//     );
+
+// // Get the original file path and name
+//     String originalFilePath = imageFile.path;
+//     String originalFileName = originalFilePath.split('/').last;
+
+//     // Create a new file path for the compressed image
+//     String compressedFilePath = originalFilePath.replaceFirst(
+//         originalFileName, '${originalFileName}_compress.jpg');
+
+//     // Save the compressed image to the same path with a new name
+//     File compressedFile = File(compressedFilePath);
+//     await compressedFile.writeAsBytes(compressedBytes);
+
+//     return compressedFilePath;
+//   }
+
+  Future<String> uploadImageToCloudinary(String path) async {
+    var cloudinaryUrl =
+        'https://api.cloudinary.com/v1_1/dgixhggt0/image/upload';
+    var apiKey = '562691868772357';
+    // var apiSecret = '8OZ2vxLiWd_f3hVMDM-mBlIloA0';
+    // final cloudinary = CloudinaryObject.fromCloudName(cloudName: 'dgixhggt0');
+    var request = http.MultipartRequest('POST', Uri.parse(cloudinaryUrl))
+      ..fields.addAll({
+        'upload_preset':
+            'e9gzbdu1', // You need to create an upload preset in your Cloudinary dashboard
+        'api_key': apiKey,
+      })
+      ..files.add(
+        await http.MultipartFile.fromPath('file', path),
+      );
+
+    final resp = await request.send();
+
+    final sdata = String.fromCharCodes(await resp.stream.toBytes());
+    final jsonMap = jsonDecode(sdata);
+
+    // print(jsonMap['url']);
+    return jsonMap['url'];
+
+    // print(resp);
+  }
 
   @override
   Widget build(BuildContext context) {
+    void showAlert() {
+      QuickAlert.show(context: context, type: QuickAlertType.success);
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black87,
@@ -30,6 +117,11 @@ class CreateBlog extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                ImagePickerWidget(
+                  onImageSelected: (XFile image) {
+                    this.image = image;
+                  },
+                ),
                 TextFormField(
                   controller: title,
                   style: const TextStyle(color: Colors.white70),
@@ -84,7 +176,29 @@ class CreateBlog extends StatelessWidget {
                       // the form is invalid.
 
                       if (_registerkey.currentState!.validate()) {
-                        print(title.text + description.text);
+                        // print(title.text + description.text);
+
+                        // await cropAndCompressImage(image);
+
+                        final img = await uploadImageToCloudinary(image.path);
+
+                        final response = await http.post(
+                          Uri.parse('http://192.168.100.9:4000/createpost'),
+                          headers: {'Content-Type': 'application/json'},
+                          body: jsonEncode({
+                            "authorid": authorid,
+                            "author": author,
+                            "text": text.text,
+                            "description": description.text,
+                            "title": title.text,
+                            "img": img
+                            // Your request body here
+                          }),
+                        );
+
+                        if (response.statusCode == 200) {
+                          showAlert();
+                        } else {}
 //                         String currentDirectory = Directory.current.path;
 //                         print(currentDirectory);
 //                         // Create the path to the blogData.json file

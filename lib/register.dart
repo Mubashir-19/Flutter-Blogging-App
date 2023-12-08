@@ -1,6 +1,8 @@
+import 'dart:convert';
+import 'package:quickalert/quickalert.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
-// ignore: must_be_immutable
 class Register extends StatelessWidget {
   Register({super.key});
   final GlobalKey<FormState> _registerkey = GlobalKey<FormState>();
@@ -10,6 +12,10 @@ class Register extends StatelessWidget {
   TextEditingController rname = TextEditingController(text: '');
   @override
   Widget build(BuildContext context) {
+    void showAlert() {
+      QuickAlert.show(context: context, type: QuickAlertType.success);
+    }
+
     return Form(
         key: _registerkey,
         child: Column(
@@ -20,11 +26,11 @@ class Register extends StatelessWidget {
               style: const TextStyle(color: Colors.white70),
               decoration: const InputDecoration(
                 hintStyle: TextStyle(color: Colors.white38),
-                hintText: 'Enter your Full Name',
+                hintText: 'Enter your Username',
               ),
               validator: (String? value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
+                  return 'Required';
                 }
                 return null;
               },
@@ -38,7 +44,7 @@ class Register extends StatelessWidget {
               ),
               validator: (String? value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
+                  return 'Required';
                 }
                 return null;
               },
@@ -53,25 +59,44 @@ class Register extends StatelessWidget {
               ),
               validator: (String? value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
+                  return 'Required';
                 }
                 return null;
               },
             ),
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 16.0),
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: ElevatedButton(
                 style: ButtonStyle(
                     backgroundColor: MaterialStateColor.resolveWith(
                         (states) => Color(0xffe8e8e8))),
-                onPressed: () {
+                onPressed: () async {
                   // Validate will return true if the form is valid, or false if
                   // the form is invalid.
                   if (_registerkey.currentState!.validate()) {
-                    print(remail.text + rpassword.text);
+                    // print(remail.text + rpassword.text);
+
+                    final response = await http.post(
+                      Uri.parse('http://192.168.100.9:4000/signup'),
+                      headers: {'Content-Type': 'application/json'},
+                      body: jsonEncode({
+                        "email": remail.text,
+                        "password": rpassword.text,
+                        "username": rname.text
+                        // Your request body here
+                      }),
+                    );
+
+                    if (response.statusCode == 200) {
+                      // print('Response: ${response.body}');
+                      showAlert();
+                    } else {
+                      print(
+                          'Request failed with status: ${response.statusCode}');
+                    }
                   }
                 },
-                child: Text('Submit'),
+                child: const Text('Submit'),
               ),
             ),
           ],

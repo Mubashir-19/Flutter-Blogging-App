@@ -6,9 +6,11 @@ class Blog extends StatelessWidget {
   final String title;
   final String author;
   final String text;
+  final String image;
 
   const Blog(
       {super.key,
+      required this.image,
       required this.title,
       required this.author,
       required this.text});
@@ -27,7 +29,9 @@ class Blog extends StatelessWidget {
       ),
       body: Padding(
         padding: EdgeInsets.only(
-            left: MediaQuery.of(context).size.width * 0.05, top: 20),
+            left: MediaQuery.of(context).size.width * 0.05,
+            top: 20,
+            right: MediaQuery.of(context).size.width * 0.05),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -47,6 +51,8 @@ class Blog extends StatelessWidget {
                 style: const TextStyle(color: Colors.white70),
               )
             ]),
+            const SizedBox(height: 20),
+            Image(image: NetworkImage(image)),
             const SizedBox(height: 20),
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.9,

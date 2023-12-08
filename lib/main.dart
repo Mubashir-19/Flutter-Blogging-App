@@ -1,7 +1,8 @@
 // import 'dart:convert';
 // import 'package:http/http.dart' as http;
 import 'dart:async';
-
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:se_project/register.dart';
 import 'package:se_project/widgets/signup.dart';
@@ -98,18 +99,21 @@ class NavigationKeys {
 class _SplashScreenState extends State<SplashScreen> {
   late String email = '';
   late String username = '';
+  late String authorid = '';
+
   @override
   void initState() {
     super.initState();
     checkLoginStatus();
-    Timer(const Duration(seconds: 2), () {
+    Timer(const Duration(seconds: 4), () {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (_) => email != '' && username != ''
+          builder: (_) => email != '' && username != '' && authorid != ''
               ? Home(
                   statusBarHeight: widget.statusBarHeight,
                   email: email,
-                  username: username)
-              : const Auth()));
+                  username: username,
+                  authorid: authorid)
+              : Auth()));
     });
   }
 
@@ -118,6 +122,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
     email = prefs.getString('email') ?? '';
     username = prefs.getString('username') ?? '';
+    authorid = prefs.getString('authorid') ?? '';
+    // print(items);
   }
 
   @override

@@ -1,21 +1,21 @@
 import 'dart:convert';
-
+import "package:http/http.dart" as http;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:se_project/widgets/postwidget.dart';
 import 'package:se_project/widgets/tagbar.dart';
 
 import '../classes/comment.dart';
 
 class HomeFeed extends StatefulWidget {
-  const HomeFeed({super.key});
+  final dynamic items;
+  const HomeFeed({required this.items, super.key});
 
   @override
   State<HomeFeed> createState() => _HomeFeedState();
 }
 
 class _HomeFeedState extends State<HomeFeed> {
-  var _items = [];
+  // var items = [];
   var _tagItems = [];
   @override
   void initState() {
@@ -25,24 +25,22 @@ class _HomeFeedState extends State<HomeFeed> {
   }
 
   Future<void> getjson() async {
-    final String response =
-        await rootBundle.loadString("lib/temp/blogdata.json");
-    final data = await json.decode(response);
-
     setState(() {
-      _items = data;
-      _tagItems = data;
-      // for (var item in _items) print(item["id"]);
+      _tagItems = widget.items;
+      // for (var item in items) print(item["id"]);
     });
   }
 
   void selectedTab(String tag) {
     var temp = [];
 
+    // print(widget.items);
     if (tag == "for you") {
-      temp = _items;
+      temp = widget.items;
+
+      // print(temp);
     } else {
-      for (var item in _items) {
+      for (var item in widget.items) {
         if (item["title"].toLowerCase().contains(tag) ||
             item["author"].toLowerCase().contains(tag) ||
             item["text"].toLowerCase().contains(tag) ||
@@ -103,9 +101,10 @@ class _HomeFeedState extends State<HomeFeed> {
           itemCount: _tagItems.length,
           itemBuilder: (context, index) {
             return PostWidget(
+              image: _tagItems[index]["img"],
               description: _tagItems[index]["description"],
               // key: Key(_tagItems[index]["id"]),
-              id: _tagItems[index]["id"],
+              id: _tagItems[index]["authorid"],
               title: _tagItems[index]["title"],
               upvotes: _tagItems[index]["upvotes"],
               author: _tagItems[index]["author"],
@@ -128,7 +127,7 @@ class _HomeFeedState extends State<HomeFeed> {
 //           scrollDirection: Axis.vertical,
 
 //           children: [
-//             for (var item in _items)
+//             for (var item in items)
 //               PostWidget(
 //                 description: "description",
 //                 key: Key(item["id"]),

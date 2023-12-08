@@ -28,7 +28,7 @@ class Account extends StatelessWidget {
                     width: 10,
                   ),
                   Text(
-                    email,
+                    username,
                     style: const TextStyle(
                         color: Colors.white70,
                         fontSize: 20,

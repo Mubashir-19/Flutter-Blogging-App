@@ -13,21 +13,6 @@ class Login extends StatelessWidget {
   TextEditingController semail = TextEditingController(text: '');
   TextEditingController spassword = TextEditingController(text: '');
 
-  Future<void> sendPostRequest() async {
-    var response =
-        await http.post(Uri.parse("http://192.168.100.9:4000/signin"),
-            headers: {"Content-Type": "application/json"},
-            body: jsonEncode({
-              "email": semail.text,
-              "password": spassword.text,
-            }));
-
-    if (kDebugMode) {
-      print(response.statusCode);
-      print(response.body);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -40,7 +25,7 @@ class Login extends StatelessWidget {
               style: const TextStyle(color: Colors.white70),
               decoration: const InputDecoration(
                 hintStyle: TextStyle(color: Colors.white38),
-                hintText: 'Enter your email',
+                hintText: 'Enter your email or username',
               ),
               validator: (String? value) {
                 if (value == null || value.isEmpty) {
@@ -72,18 +57,34 @@ class Login extends StatelessWidget {
                   // the form is invalid.
                   if (_signinkey.currentState!.validate()) {
                     // print(semail.text + spassword.text);
-                    SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-                    prefs.setString('email', semail.text);
-                    prefs.setString('username', spassword.text);
-                    if (!context.mounted) return;
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const SplashScreen(
-                                statusBarHeight: 10,
-                              )),
-                    );
+
+                    var response = await http.post(
+                        Uri.parse("http://192.168.100.9:4000/signin"),
+                        headers: {"Content-Type": "application/json"},
+                        body: jsonEncode({
+                          "email": semail.text,
+                          "password": spassword.text,
+                        }));
+
+                    if (response.statusCode == 200) {
+                      var data = json.decode(response.body);
+                      SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      prefs.setString('email', data["email"]);
+                      prefs.setString('username', data["username"]);
+                      prefs.setString('authorid', data["id"]);
+                      if (!context.mounted) return;
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const SplashScreen(
+                                  statusBarHeight: 10,
+                                )),
+                      );
+                    } else {
+                      print(response.body);
+                    }
+
                     // sendPostRequest();
                   }
                 },

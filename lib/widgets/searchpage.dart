@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import "package:http/http.dart" as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:se_project/widgets/postwidget.dart';
@@ -8,40 +8,46 @@ import 'package:se_project/widgets/tagbar.dart';
 import '../classes/comment.dart';
 
 class SearchPage extends StatefulWidget {
-  const SearchPage({super.key});
+  final dynamic items;
+  const SearchPage({required this.items, super.key});
 
   @override
   State<SearchPage> createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> {
-  var _items = [];
   var searchedItems = [];
+  // var widget.items = [];
   TextEditingController searchtext = TextEditingController(text: '');
-  @override
-  void initState() {
-    super.initState();
-    // Your function call goes here
-    getjson();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   // Your function call goes here
+  //   getjson();
+  // }
 
-  Future<void> getjson() async {
-    final String response =
-        await rootBundle.loadString("lib/temp/blogdata.json");
-    final data = await json.decode(response);
+  // Future<void> getjson() async {
+  //   // final String response =
+  //   //     await rootBundle.loadString("lib/temp/blogdata.json");
+  //   // final data = await json.decode(response);
+  //   var response =
+  //       await http.get(Uri.parse("http://192.168.100.9:4000/getall"));
 
-    setState(() {
-      _items = data;
+  //   if (response.statusCode == 200) {
+  //     setState(() {
+  //       widget.items = json.decode(response.body);
+  //       ;
 
-      // for (var item in _items) print(item["id"]);
-    });
-  }
+  //       // for (var item in widget.items) print(item["id"]);
+  //     });
+  //   }
+  // }
 
   void searchPosts(String keyword) {
     keyword = keyword.toLowerCase();
     var temp = [];
 
-    for (var item in _items) {
+    for (var item in widget.items) {
       if (item["title"].toLowerCase().contains(keyword) ||
           item["author"].toLowerCase().contains(keyword) ||
           item["text"].toLowerCase().contains(keyword) ||
@@ -116,8 +122,9 @@ class _SearchPageState extends State<SearchPage> {
           itemBuilder: (context, index) {
             return PostWidget(
               description: searchedItems[index]["description"],
+              image: searchedItems[index]["img"],
               // key: Key(searchedItems[index]["id"]),
-              id: searchedItems[index]["id"],
+              id: searchedItems[index]["authorid"],
               title: searchedItems[index]["title"],
               upvotes: searchedItems[index]["upvotes"],
               author: searchedItems[index]["author"],
