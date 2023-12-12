@@ -1,14 +1,12 @@
 import 'dart:convert';
-import 'dart:io';
-import 'dart:ui';
+
 import 'package:image_picker/image_picker.dart';
-import 'package:image/image.dart' as img;
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
+import 'package:se_project/widgets/blogtext.dart';
 import 'package:se_project/widgets/imagePicker.dart';
 
 class CreateBlog extends StatelessWidget {
@@ -19,10 +17,9 @@ class CreateBlog extends StatelessWidget {
 
   TextEditingController title = TextEditingController(text: '');
   TextEditingController description = TextEditingController(text: '');
-  TextEditingController text = TextEditingController(text: '');
   TextEditingController tags = TextEditingController(text: '');
 
-  late XFile image;
+  XFile? image;
 
 //   Future<String> cropAndCompressImage(XFile imageFile) async {
 //     // Load the image using the image package
@@ -97,6 +94,8 @@ class CreateBlog extends StatelessWidget {
     // print(resp);
   }
 
+  final GlobalKey<BlogTextState> childKey = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     void showAlert() {
@@ -111,11 +110,13 @@ class CreateBlog extends StatelessWidget {
       ),
       // backgroundColor: Colors.black38,
       body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        padding: const EdgeInsets.only(right: 15, left: 15),
         color: Colors.black87,
         child: Form(
             key: _registerkey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: ListView(
               children: <Widget>[
                 ImagePickerWidget(
                   onImageSelected: (XFile image) {
@@ -137,7 +138,7 @@ class CreateBlog extends StatelessWidget {
                   },
                 ),
                 TextFormField(
-                  controller: text,
+                  controller: description,
                   style: const TextStyle(color: Colors.white70),
                   decoration: const InputDecoration(
                     hintStyle: TextStyle(color: Colors.white38),
@@ -150,21 +151,31 @@ class CreateBlog extends StatelessWidget {
                     return null;
                   },
                 ),
-                TextFormField(
-                  controller: description,
-                  obscureText: true,
-                  style: const TextStyle(color: Colors.white70),
-                  decoration: const InputDecoration(
-                    hintStyle: TextStyle(color: Colors.white38),
-                    hintText: 'Enter Blog text',
-                  ),
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter some text';
-                    }
-                    return null;
-                  },
+                const SizedBox(height: 20),
+                const Text(
+                  "Blog Body",
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
+                const SizedBox(height: 5),
+                BlogText(
+                  key: childKey,
+                ),
+
+                // TextFormField(
+                //   controller: text,
+                //   obscureText: true,
+                //   style: const TextStyle(color: Colors.white70),
+                //   decoration: const InputDecoration(
+                //     hintStyle: TextStyle(color: Colors.white38),
+                //     hintText: 'Enter Blog text',
+                //   ),
+                //   validator: (String? value) {
+                //     if (value == null || value.isEmpty) {
+                //       return 'Please enter some text';
+                //     }
+                //     return null;
+                //   },
+                // ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: ElevatedButton(
@@ -175,12 +186,15 @@ class CreateBlog extends StatelessWidget {
                       // Validate will return true if the form is valid, or false if
                       // the form is invalid.
 
-                      if (_registerkey.currentState!.validate()) {
+                      if (_registerkey.currentState!.validate() &&
+                          image != null) {
                         // print(title.text + description.text);
 
                         // await cropAndCompressImage(image);
 
-                        final img = await uploadImageToCloudinary(image.path);
+                        String text = childKey.currentState!.getBlogBody();
+
+                        final img = await uploadImageToCloudinary(image!.path);
 
                         final response = await http.post(
                           Uri.parse('http://192.168.100.9:4000/createpost'),
@@ -188,7 +202,7 @@ class CreateBlog extends StatelessWidget {
                           body: jsonEncode({
                             "authorid": authorid,
                             "author": author,
-                            "text": text.text,
+                            "text": text,
                             "description": description.text,
                             "title": title.text,
                             "img": img

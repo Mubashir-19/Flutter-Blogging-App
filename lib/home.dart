@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:se_project/widgets/account.dart';
 import 'package:se_project/widgets/createBlog.dart';
 import 'package:se_project/widgets/searchpage.dart';
@@ -46,6 +48,9 @@ class _HomeState extends State<Home> {
     await Future.delayed(const Duration(seconds: 3));
     if (response.statusCode == 200) {
       items = json.decode(response.body);
+    } else {
+      items = [];
+      // asyncInitialization.onError((error, stackTrace) => "Offline");
     }
   }
 
@@ -101,12 +106,10 @@ class _HomeState extends State<Home> {
                   color: Colors.white70,
                 ),
               );
-            } else if (snapshot.hasError) {
-              // If there's an error during initialization, handle it here
-              return Center(
-                child: Text('Error: ${snapshot.error}'),
-              );
             } else {
+              // if (snapshot.hasError) {
+              //   QuickAlert.show(context: context, type: QuickAlertType.error);
+              // }
               // If the async initialization is complete, build the actual widget tree
               return Container(
                 padding: EdgeInsets.only(top: widget.statusBarHeight),

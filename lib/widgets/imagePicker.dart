@@ -19,7 +19,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
     final ImagePicker picker = ImagePicker();
 // Pick an image.
     final pickedImage = await picker.pickImage(source: ImageSource.gallery);
-    print(pickedImage);
+    // print(pickedImage);
     if (pickedImage != null) {
       widget.onImageSelected(pickedImage);
       setState(() {

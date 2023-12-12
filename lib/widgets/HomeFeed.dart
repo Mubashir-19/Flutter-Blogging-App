@@ -77,14 +77,14 @@ class _HomeFeedState extends State<HomeFeed> {
                       fontWeight: FontWeight.bold),
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.only(
-                    right: MediaQuery.of(context).size.width * 0.05),
-                child: const Icon(
-                  Icons.notifications,
-                  color: Colors.white70,
-                ),
-              ),
+              // Padding(
+              //   padding: EdgeInsets.only(
+              //       right: MediaQuery.of(context).size.width * 0.05),
+              //   child: const Icon(
+              //     Icons.notifications,
+              //     color: Colors.white70,
+              //   ),
+              // ),
             ],
           ),
         ),

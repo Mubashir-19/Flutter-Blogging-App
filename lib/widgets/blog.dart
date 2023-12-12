@@ -1,8 +1,10 @@
 // blog.dart
 
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 
-class Blog extends StatelessWidget {
+class Blog extends StatefulWidget {
   final String title;
   final String author;
   final String text;
@@ -16,6 +18,65 @@ class Blog extends StatelessWidget {
       required this.text});
 
   @override
+  State<Blog> createState() => _BlogState();
+}
+
+class _BlogState extends State<Blog> {
+  List<Widget> body = [];
+  void processString(String inputString) {
+    for (int i = 0; i < inputString.length; i++) {
+      if (inputString[i] == "<" && inputString[i + 1] != '/') {
+        String start = inputString.substring(i + 1, i + 6);
+        int j = i + 6;
+        String temp = '';
+
+        while (j < inputString.length) {
+          if (inputString[j] != '<') {
+            temp += inputString[j];
+          } else {
+            body.add(const SizedBox(height: 10));
+
+            switch (start) {
+              case "9876>":
+                body.add(Text(
+                  temp,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 30),
+                ));
+                break;
+              case "5432>":
+                body.add(Text(
+                  temp,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w600, fontSize: 20),
+                ));
+                break;
+              case "1010>":
+                body.add(Text(
+                  temp,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w100, fontSize: 10),
+                ));
+                break;
+            }
+            // body.add(const SizedBox(height: 10));
+            break;
+          }
+          j++;
+        }
+        i = j; // Update the outer loop variable
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    processString(widget.text);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(255, 255, 255, 0.102),
@@ -23,7 +84,7 @@ class Blog extends StatelessWidget {
         backgroundColor: const Color.fromRGBO(255, 255, 255, 0),
         foregroundColor: Colors.white70,
         title: Text(
-          title,
+          widget.title,
           maxLines: 2,
         ),
       ),
@@ -32,8 +93,7 @@ class Blog extends StatelessWidget {
             left: MediaQuery.of(context).size.width * 0.05,
             top: 20,
             right: MediaQuery.of(context).size.width * 0.05),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ListView(
           children: [
             const Padding(
               padding: EdgeInsets.only(
@@ -47,20 +107,13 @@ class Blog extends StatelessWidget {
             Row(children: [
               const Icon(Icons.account_circle, color: Colors.white70),
               Text(
-                author,
+                widget.author,
                 style: const TextStyle(color: Colors.white70),
               )
             ]),
             const SizedBox(height: 20),
-            Image(image: NetworkImage(image)),
-            const SizedBox(height: 20),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.9,
-              child: Text(
-                text,
-                style: TextStyle(color: Colors.white70),
-              ),
-            ),
+            Image(image: NetworkImage(widget.image)),
+            ...body,
           ],
         ),
       ),

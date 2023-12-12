@@ -1,11 +1,7 @@
 // import 'dart:convert';
 // import 'package:http/http.dart' as http;
 import 'dart:async';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:se_project/register.dart';
-import 'package:se_project/widgets/signup.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // import 'auth.dart';
@@ -105,7 +101,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     checkLoginStatus();
-    Timer(const Duration(seconds: 4), () {
+    Timer(const Duration(seconds: 2), () {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (_) => email != '' && username != '' && authorid != ''
               ? Home(
