@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:se_project/main.dart';
 import 'dart:convert';
@@ -59,7 +60,7 @@ class Login extends StatelessWidget {
                     // print(semail.text + spassword.text);
 
                     var response = await http.post(
-                        Uri.parse("http://192.168.100.9:4000/signin"),
+                        Uri.parse("${dotenv.env['host']}/signin"),
                         headers: {"Content-Type": "application/json"},
                         body: jsonEncode({
                           "email": semail.text,

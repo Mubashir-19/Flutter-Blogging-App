@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -22,7 +23,7 @@ class Register extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             TextFormField(
-              controller: remail,
+              controller: rname,
               style: const TextStyle(color: Colors.white70),
               decoration: const InputDecoration(
                 hintStyle: TextStyle(color: Colors.white38),
@@ -36,7 +37,7 @@ class Register extends StatelessWidget {
               },
             ),
             TextFormField(
-              controller: rname,
+              controller: remail,
               style: const TextStyle(color: Colors.white70),
               decoration: const InputDecoration(
                 hintStyle: TextStyle(color: Colors.white38),
@@ -77,7 +78,7 @@ class Register extends StatelessWidget {
                     // print(remail.text + rpassword.text);
 
                     final response = await http.post(
-                      Uri.parse('http://192.168.100.9:4000/signup'),
+                      Uri.parse('${dotenv.env['host']}/signup'),
                       headers: {'Content-Type': 'application/json'},
                       body: jsonEncode({
                         "email": remail.text,

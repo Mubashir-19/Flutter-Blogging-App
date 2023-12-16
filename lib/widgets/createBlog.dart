@@ -1,7 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:quickalert/models/quickalert_type.dart';
@@ -12,6 +12,7 @@ import 'package:se_project/widgets/imagePicker.dart';
 class CreateBlog extends StatelessWidget {
   final String author;
   final String authorid;
+
   CreateBlog({super.key, required this.author, required this.authorid});
   final GlobalKey<FormState> _registerkey = GlobalKey<FormState>();
 
@@ -197,7 +198,7 @@ class CreateBlog extends StatelessWidget {
                         final img = await uploadImageToCloudinary(image!.path);
 
                         final response = await http.post(
-                          Uri.parse('http://192.168.100.9:4000/createpost'),
+                          Uri.parse('${dotenv.env['host']}/createpost'),
                           headers: {'Content-Type': 'application/json'},
                           body: jsonEncode({
                             "authorid": authorid,

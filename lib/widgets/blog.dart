@@ -24,6 +24,7 @@ class Blog extends StatefulWidget {
 class _BlogState extends State<Blog> {
   List<Widget> body = [];
   void processString(String inputString) {
+    // print(inputString);
     for (int i = 0; i < inputString.length; i++) {
       if (inputString[i] == "<" && inputString[i + 1] != '/') {
         String start = inputString.substring(i + 1, i + 6);

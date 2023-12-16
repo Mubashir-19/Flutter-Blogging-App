@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:quickalert/models/quickalert_type.dart';
-import 'package:quickalert/widgets/quickalert_dialog.dart';
+
 import 'package:se_project/widgets/account.dart';
 import 'package:se_project/widgets/createBlog.dart';
 import 'package:se_project/widgets/searchpage.dart';
 import 'widgets/HomeFeed.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 // import 'widgets/tags.dart';
 
 class Home extends StatefulWidget {
@@ -35,19 +36,22 @@ class _HomeState extends State<Home> {
   late var items = [];
   @override
   void initState() {
+    // print('${dotenv.env['host']}');
+
     // TODO: implement initState
     super.initState();
+
     asyncInitialization = getItems();
   }
 
   Future<void> getItems() async {
-    var response =
-        await http.get(Uri.parse("http://192.168.100.9:4000/getall"));
+    var response = await http.get(Uri.parse("${dotenv.env['host']}/getall"));
 
     // print(response);
     await Future.delayed(const Duration(seconds: 3));
     if (response.statusCode == 200) {
       items = json.decode(response.body);
+      // print(items);
     } else {
       items = [];
       // asyncInitialization.onError((error, stackTrace) => "Offline");
@@ -126,7 +130,12 @@ class _HomeState extends State<Home> {
                   children: [
                     HomeFeed(items: items),
                     SearchPage(items: items),
-                    Account(email: widget.email, username: widget.username)
+                    Account(
+                      email: widget.email,
+                      username: widget.username,
+                      items: items.where(
+                          (element) => element["authorid"] == widget.authorid),
+                    )
                   ],
                 ),
               );
