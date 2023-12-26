@@ -9,7 +9,7 @@ const mongoose = require("mongoose")
 // mongoose.connect("")
 // Middleware to parse JSON data
 
-mongoose.connect('mongodb+srv://mubashir:smiu123@cluster0.yrrns.mongodb.net/blog?retryWrites=true&w=majority')
+mongoose.connect('mongodb+srv://mubashir:smiu123@cluster0.yrrns.mongodb.net/?retryWrites=true&w=majority')
   .then(() => {
     mongooseConnected = true;
     console.log('Connected to MongoDB');
@@ -41,7 +41,7 @@ app.use(express.urlencoded({ extended: true }))
 // Define a route for /signin
 app.post('/signin', async (req, res) => {
   if (!mongooseConnected) return res.status(500).send("Database error")
-
+  
   const user = await User.findOne({
     $or: [
       { email: req.body.email },
@@ -54,6 +54,7 @@ app.post('/signin', async (req, res) => {
 
     res.status(404).send("User not found")
   }else {
+    console.log(user);
     if (user.password == req.body.password) {
 
       res.status(200).json({username: user.username, id: user.id, email: user.email})
@@ -100,6 +101,14 @@ app.get("/getall", async (req, res) => {
 app.get("/", (req, res) => {
   res.send("Home")
 })
+
+app.post('/deletePost', async (req, res) => {
+  if (!mongooseConnected) return res.status(500).send("Database error")
+
+  console.log(req.body);
+
+})
+
 
 app.post('/signup', async (req, res) => {
   if (!mongooseConnected) return res.status(500).send("Database error")

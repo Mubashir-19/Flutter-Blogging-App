@@ -1,9 +1,6 @@
-import 'dart:convert';
-import "package:http/http.dart" as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:se_project/widgets/postwidget.dart';
-import 'package:se_project/widgets/tagbar.dart';
 
 import '../classes/comment.dart';
 
@@ -121,6 +118,7 @@ class _SearchPageState extends State<SearchPage> {
           itemCount: searchedItems.length,
           itemBuilder: (context, index) {
             return PostWidget(
+              postId: searchedItems[index]["_id"],
               description: searchedItems[index]["description"],
               image: searchedItems[index]["img"],
               // key: Key(searchedItems[index]["id"]),

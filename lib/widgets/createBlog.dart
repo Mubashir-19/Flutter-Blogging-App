@@ -12,8 +12,12 @@ import 'package:se_project/widgets/imagePicker.dart';
 class CreateBlog extends StatelessWidget {
   final String author;
   final String authorid;
-
-  CreateBlog({super.key, required this.author, required this.authorid});
+  final Function pushItem;
+  CreateBlog(
+      {super.key,
+      required this.author,
+      required this.authorid,
+      required this.pushItem});
   final GlobalKey<FormState> _registerkey = GlobalKey<FormState>();
 
   TextEditingController title = TextEditingController(text: '');
@@ -195,6 +199,15 @@ class CreateBlog extends StatelessWidget {
 
                         String text = childKey.currentState!.getBlogBody();
 
+                        if (text == '') {
+                          QuickAlert.show(
+                              context: context,
+                              type: QuickAlertType.error,
+                              text: "Blog cannot be empty");
+
+                          return;
+                        }
+
                         final img = await uploadImageToCloudinary(image!.path);
 
                         final response = await http.post(
@@ -212,6 +225,16 @@ class CreateBlog extends StatelessWidget {
                         );
 
                         if (response.statusCode == 200) {
+                          pushItem({
+                            "authorid": authorid,
+                            "author": author,
+                            "text": text,
+                            "description": description.text,
+                            "title": title.text,
+                            "img": img,
+                            "upvotes": 0
+                            // Your request body here
+                          });
                           showAlert();
                         } else {}
 //                         String currentDirectory = Directory.current.path;

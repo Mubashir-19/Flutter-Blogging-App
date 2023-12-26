@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:se_project/widgets/PostLike.dart';
 
 import '../classes/comment.dart';
-import '../classes/post.dart';
 import 'blog.dart';
 
 class PostWidget extends StatelessWidget {
+  final String postId;
   final String title;
   final String author;
   final String text;
@@ -18,6 +19,7 @@ class PostWidget extends StatelessWidget {
 
   PostWidget({
     super.key,
+    required this.postId,
     required this.image,
     required this.title,
     required this.description,
@@ -46,7 +48,7 @@ class PostWidget extends StatelessWidget {
       },
       child: Container(
           // margin: const EdgeInsets.only(top: 10, bottom: 10),
-          height: 110,
+          height: 80,
           padding: const EdgeInsets.only(left: 10),
           decoration: const BoxDecoration(
               border: Border(
@@ -82,44 +84,69 @@ class PostWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.account_circle_sharp,
-                            size: 12,
-                            weight: 1,
-                            color: Colors.white70,
+                      Expanded(
+                          flex: 7,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 2.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.only(top: 2, bottom: 2),
+                                  child: Text(
+                                    title,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 2,
+                                    style: const TextStyle(
+                                        color: Colors.white70,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 10),
+                                  ),
+                                ),
+                                SizedBox(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.65,
+                                    child: Text(description,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                            fontSize: 7,
+                                            color: Colors.white70)))
+                              ],
+                            ),
+                          )),
+                      Expanded(
+                        flex: 3,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 2.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.account_circle_sharp,
+                                    size: 12,
+                                    weight: 1,
+                                    color: Colors.white70,
+                                  ),
+                                  const SizedBox(
+                                    width: 2,
+                                  ),
+                                  Text(author,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.normal,
+                                        fontSize: 8,
+                                        color: Colors.white70,
+                                      )),
+                                ],
+                              ),
+                              PostLike(id: postId),
+                            ],
                           ),
-                          const SizedBox(
-                            width: 2,
-                          ),
-                          Text(author,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.normal,
-                                fontSize: 8,
-                                color: Colors.white70,
-                              )),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 2, bottom: 2),
-                        child: Text(
-                          title,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                          style: const TextStyle(
-                              color: Colors.white70,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15),
                         ),
                       ),
-                      SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.65,
-                          child: Text(description,
-                              maxLines: 3,
-                              overflow: TextOverflow.fade,
-                              style: const TextStyle(
-                                  fontSize: 10, color: Colors.white70))),
                     ],
                   ),
                 ),

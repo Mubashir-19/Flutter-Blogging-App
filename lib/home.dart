@@ -58,6 +58,12 @@ class _HomeState extends State<Home> {
     }
   }
 
+  void pushItem(dynamic a) async {
+    setState(() {
+      items.add(a);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // print(statusBarHeight);
@@ -84,6 +90,7 @@ class _HomeState extends State<Home> {
               context,
               MaterialPageRoute(
                 builder: (context) => CreateBlog(
+                  pushItem: pushItem,
                   author: widget.email,
                   authorid: widget.authorid,
                 ),

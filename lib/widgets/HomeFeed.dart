@@ -1,5 +1,3 @@
-import 'dart:convert';
-import "package:http/http.dart" as http;
 import 'package:flutter/material.dart';
 import 'package:se_project/widgets/postwidget.dart';
 import 'package:se_project/widgets/tagbar.dart';
@@ -101,6 +99,7 @@ class _HomeFeedState extends State<HomeFeed> {
           itemCount: _tagItems.length,
           itemBuilder: (context, index) {
             return PostWidget(
+              postId: _tagItems[index]["_id"],
               image: _tagItems[index]["img"],
               description: _tagItems[index]["description"],
               // key: Key(_tagItems[index]["id"]),

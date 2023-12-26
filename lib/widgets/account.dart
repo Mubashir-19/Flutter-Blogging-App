@@ -61,6 +61,7 @@ class Account extends StatelessWidget {
         ...[
           for (var item in items)
             PostWidget(
+              postId: item["_id"],
               image: item["img"],
               description: item["description"],
               // key: Key(item["id"]),
