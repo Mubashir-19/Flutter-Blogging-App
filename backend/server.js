@@ -9,7 +9,7 @@ const mongoose = require("mongoose")
 // mongoose.connect("")
 // Middleware to parse JSON data
 
-mongoose.connect('mongodb+srv://mubashir:smiu123@cluster0.yrrns.mongodb.net/?retryWrites=true&w=majority')
+mongoose.connect('mongodb+srv://mubashir:smiu123@cluster0.yrrns.mongodb.net/blog?retryWrites=true&w=majority')
   .then(() => {
     mongooseConnected = true;
     console.log('Connected to MongoDB');
@@ -67,12 +67,16 @@ app.post('/signin', async (req, res) => {
   // res.send("ok")
 });
 
+app.post("/updateLikes", async (req, res) => {
+  console.log(req.body)
+})
+
 app.post("/createpost", async (req, res) => {
   const {author, authorid, description, title, text, img} = req.body;
   if (!mongooseConnected) return res.status(500).send("Database error")
-
+  const uniqueId = generateUniqueId();
   try {
-    const post = new Post({author: author, authorid: authorid, description: description, img: img, text: text, title: title})
+    const post = new Post({author: author, authorid: authorid, description: description, img: img, text: text, title: title, id: uniqueId , likes: [authorid]})
 
     await post.save();
     // const result = await cloudinary.uploader.upload(req.body.image, {
@@ -84,8 +88,8 @@ app.post("/createpost", async (req, res) => {
     console.error('Error uploading image:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
-
-  res.status(200).send("Post Created")
+  const retrievedPost = await Post.findOne({ id: uniqueId }).exec();
+  res.status(200).json(retrievedPost)
 })
 
 

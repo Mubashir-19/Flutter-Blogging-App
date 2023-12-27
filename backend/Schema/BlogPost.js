@@ -5,6 +5,14 @@ const blogPostSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    id: {
+        type: String,
+        required: true
+    },
+    likes: {
+        type: [String],
+        required: false
+    },
     img: {
         type: String,
         required: true,
@@ -34,10 +42,6 @@ const blogPostSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
         required: true,
-    },
-    upvotes: {
-        type: Number,
-        default: 0,
     },
     comments: {
         type: [String],
