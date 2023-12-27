@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:se_project/widgets/account.dart';
 import 'package:se_project/widgets/createBlog.dart';
 import 'package:se_project/widgets/searchpage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'widgets/HomeFeed.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -44,13 +45,23 @@ class _HomeState extends State<Home> {
     asyncInitialization = getItems();
   }
 
+  List<String> myLikes = [];
   Future<void> getItems() async {
+    final prefs = await SharedPreferences.getInstance();
     var response = await http.get(Uri.parse("${dotenv.env['host']}/getall"));
 
     // print(response);
-    await Future.delayed(const Duration(seconds: 3));
+    // await Future.delayed(const Duration(seconds: 3));
     if (response.statusCode == 200) {
       items = json.decode(response.body);
+
+      for (var item in items) {
+        if (item["likes"].contains(widget.authorid)) {
+          myLikes.add(item["id"]);
+        }
+      }
+      prefs.setStringList('likes', myLikes);
+
       // print(items);
     } else {
       items = [];
@@ -91,7 +102,7 @@ class _HomeState extends State<Home> {
               MaterialPageRoute(
                 builder: (context) => CreateBlog(
                   pushItem: pushItem,
-                  author: widget.email,
+                  author: widget.username,
                   authorid: widget.authorid,
                 ),
               ),
@@ -135,8 +146,10 @@ class _HomeState extends State<Home> {
                     });
                   },
                   children: [
-                    HomeFeed(items: items),
-                    SearchPage(items: items),
+                    HomeFeed(items: items, myLikes: myLikes),
+                    SearchPage(
+                      items: items,
+                    ),
                     Account(
                       email: widget.email,
                       username: widget.username,

@@ -1,9 +1,11 @@
 // import 'dart:convert';
 // import 'package:http/http.dart' as http;
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 // import 'auth.dart';
 import 'auth.dart';
@@ -38,8 +40,90 @@ class MyMaterialStateColor extends MaterialStateColor {
   }
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    if (state == AppLifecycleState.paused) {
+      // The app is about to be closed, make a call to the database here
+      // For example, you can use a database package like sqflite, firebase, etc.
+      // Make sure to handle the database call asynchronously.
+      _makeDatabaseCall();
+    }
+  }
+
+  Future<void> _makeDatabaseCall() async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<String> latestLikes = prefs.getStringList("likes") ?? [];
+    // print(latestLikes);
+    var response = await http.get(Uri.parse("${dotenv.env['host']}/getall"));
+    var items;
+    final authorid = prefs.getString('authorid');
+    if (authorid == null) return;
+
+    if (response.statusCode == 200) {
+      items = jsonDecode(response.body);
+    } else {
+      items = [];
+    }
+    // print(latestLikes);
+    // print(items);
+    for (var postid in latestLikes) {
+      for (var item in items) {
+        // print(item["id"] + " " + postid);
+        // print(item["likes"].toString() + " - " + authorid);
+
+        if (item["id"] == postid) {
+          if (!item["likes"].contains(authorid)) {
+            http.post(
+              Uri.parse('${dotenv.env['host']}/updateLikes'),
+              headers: {'Content-Type': 'application/json'},
+              body: jsonEncode({
+                "postid": postid,
+                "authorid": authorid,
+                "operation": "add"
+                // Your request body here
+              }),
+            );
+          }
+        }
+        print("${item["likes"]} ${latestLikes} ${postid}");
+        if (item["likes"].contains(authorid) && !latestLikes.contains(postid)) {
+          http.post(
+            Uri.parse('${dotenv.env['host']}/updateLikes'),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({
+              "postid": postid,
+              "authorid": authorid,
+              "operation": "remove"
+              // Your request body here
+            }),
+          );
+        }
+      }
+    }
+  }
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {

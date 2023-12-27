@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:se_project/widgets/PostLike.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../classes/comment.dart';
 import 'blog.dart';
@@ -9,16 +10,18 @@ class PostWidget extends StatelessWidget {
   final String title;
   final String author;
   final String text;
+  final bool like;
   final String description;
   final String image;
   // final List<String> tags;
   final String id;
   final DateTime date = DateTime.now();
-  final int upvotes;
+  final List<dynamic> likes;
   final List<Comment> comments;
 
   PostWidget({
     super.key,
+    required this.like,
     required this.postId,
     required this.image,
     required this.title,
@@ -26,9 +29,22 @@ class PostWidget extends StatelessWidget {
     required this.author,
     required this.comments,
     required this.id,
-    this.upvotes = 0,
+    required this.likes,
     required this.text,
   });
+
+  void updateLikes(bool like) async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> myLikes = prefs.getStringList("likes") ?? [];
+
+    if (like && !myLikes.contains(postId)) {
+      myLikes.add(postId);
+    } else if (!like && myLikes.contains(postId)) {
+      myLikes.remove(postId);
+    }
+    prefs.setStringList("likes", myLikes);
+    // print(myLikes);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -142,7 +158,14 @@ class PostWidget extends StatelessWidget {
                                       )),
                                 ],
                               ),
-                              PostLike(id: postId),
+                              PostLike(
+                                updateLike: updateLikes,
+                                key: Key(postId),
+                                id: postId,
+                                like: like,
+                                likesCount: likes.length,
+                                authorid: id,
+                              ),
                             ],
                           ),
                         ),

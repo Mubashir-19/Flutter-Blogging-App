@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:se_project/widgets/postwidget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class Account extends StatelessWidget {
+class Account extends StatefulWidget {
   final String email;
   final String username;
   final dynamic items;
@@ -10,6 +11,24 @@ class Account extends StatelessWidget {
       required this.items,
       required this.username,
       required this.email});
+
+  @override
+  State<Account> createState() => _AccountState();
+}
+
+class _AccountState extends State<Account> {
+  List<String> myLikes = [];
+  @override
+  void initState() {
+    super.initState();
+    // Your function call goes here
+    getData();
+  }
+
+  Future<void> getData() async {
+    final prefs = await SharedPreferences.getInstance();
+    myLikes = prefs.getStringList("likes") ?? [];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +55,7 @@ class Account extends StatelessWidget {
                       width: 10,
                     ),
                     Text(
-                      username,
+                      widget.username,
                       style: const TextStyle(
                           color: Colors.white70,
                           fontSize: 20,
@@ -59,15 +78,16 @@ class Account extends StatelessWidget {
                 fontSize: 10,
                 fontWeight: FontWeight.bold)),
         ...[
-          for (var item in items)
+          for (var item in widget.items)
             PostWidget(
-              postId: item["_id"],
+              like: myLikes.contains(item["id"]),
+              postId: item["id"],
               image: item["img"],
               description: item["description"],
               // key: Key(item["id"]),
               id: item["authorid"],
               title: item["title"],
-              upvotes: item["upvotes"],
+              likes: item["likes"],
               author: item["author"],
               comments: [],
               text: item["text"],

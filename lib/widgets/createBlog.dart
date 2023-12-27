@@ -223,18 +223,11 @@ class CreateBlog extends StatelessWidget {
                             // Your request body here
                           }),
                         );
-
+                        // print(response.body);
+                        var a = jsonDecode(response.body);
+                        // print(response.body);
                         if (response.statusCode == 200) {
-                          pushItem({
-                            "authorid": authorid,
-                            "author": author,
-                            "text": text,
-                            "description": description.text,
-                            "title": title.text,
-                            "img": img,
-                            "upvotes": 0
-                            // Your request body here
-                          });
+                          pushItem(a);
                           showAlert();
                         } else {}
 //                         String currentDirectory = Directory.current.path;

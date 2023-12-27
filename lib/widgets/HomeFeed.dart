@@ -6,7 +6,8 @@ import '../classes/comment.dart';
 
 class HomeFeed extends StatefulWidget {
   final dynamic items;
-  const HomeFeed({required this.items, super.key});
+  final List<String> myLikes;
+  const HomeFeed({required this.myLikes, this.items, super.key});
 
   @override
   State<HomeFeed> createState() => _HomeFeedState();
@@ -99,13 +100,14 @@ class _HomeFeedState extends State<HomeFeed> {
           itemCount: _tagItems.length,
           itemBuilder: (context, index) {
             return PostWidget(
-              postId: _tagItems[index]["_id"],
+              like: widget.myLikes.contains(_tagItems[index]["id"]),
+              postId: _tagItems[index]["id"],
               image: _tagItems[index]["img"],
               description: _tagItems[index]["description"],
               // key: Key(_tagItems[index]["id"]),
               id: _tagItems[index]["authorid"],
               title: _tagItems[index]["title"],
-              upvotes: _tagItems[index]["upvotes"],
+              likes: _tagItems[index]["likes"],
               author: _tagItems[index]["author"],
               comments: [
                 Comment(author: "Mubashir", authorid: "1", text: "Some text")

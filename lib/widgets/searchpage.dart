@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:se_project/widgets/postwidget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../classes/comment.dart';
 
@@ -14,14 +15,21 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   var searchedItems = [];
+  List<String> myLikes = [];
   // var widget.items = [];
   TextEditingController searchtext = TextEditingController(text: '');
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   // Your function call goes here
-  //   getjson();
-  // }
+
+  @override
+  void initState() {
+    super.initState();
+    // Your function call goes here
+    getData();
+  }
+
+  Future<void> getData() async {
+    final prefs = await SharedPreferences.getInstance();
+    myLikes = prefs.getStringList("likes") ?? [];
+  }
 
   // Future<void> getjson() async {
   //   // final String response =
@@ -118,13 +126,14 @@ class _SearchPageState extends State<SearchPage> {
           itemCount: searchedItems.length,
           itemBuilder: (context, index) {
             return PostWidget(
-              postId: searchedItems[index]["_id"],
+              like: myLikes.contains(searchedItems[index]["id"]),
+              postId: searchedItems[index]["id"],
               description: searchedItems[index]["description"],
               image: searchedItems[index]["img"],
               // key: Key(searchedItems[index]["id"]),
               id: searchedItems[index]["authorid"],
               title: searchedItems[index]["title"],
-              upvotes: searchedItems[index]["upvotes"],
+              likes: searchedItems[index]["likes"],
               author: searchedItems[index]["author"],
               comments: [
                 Comment(author: "Mubashir", authorid: "1", text: "Some text")
