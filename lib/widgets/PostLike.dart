@@ -1,56 +1,50 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:se_project/main.dart';
 
 class PostLike extends StatefulWidget {
-  final String id;
-  final String authorid;
-  final bool like;
+  final String postId;
   final int likesCount;
-  final Function updateLike;
-  const PostLike(
-      {super.key,
-      required this.updateLike,
-      required this.likesCount,
-      required this.id,
-      required this.like,
-      required this.authorid});
+  const PostLike({super.key, required this.postId, required this.likesCount});
 
   @override
   State<PostLike> createState() => _PostLikeState();
 }
 
 class _PostLikeState extends State<PostLike> {
-  late bool like;
   late int likesCount;
-  List<String> myLikes = [];
 
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
-    like = widget.like;
+
     likesCount = widget.likesCount;
-  }
-
-  void setLike() async {
-    // myLikes
-    setState(() {
-      like = !like;
-    });
-
-    await widget.updateLike(like);
-
-    // print(myLikes);
   }
 
   @override
   Widget build(BuildContext context) {
-    // print(myLikes);
+    var mylikes = Provider.of<LikesModel>(context);
+    print(mylikes.myLikes);
     return Padding(
         padding:
             EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.2),
         child: Row(children: [
           GestureDetector(
-            onTap: setLike,
-            child: like
+            onTap: () {
+              if (!mylikes.myLikes.contains(widget.postId)) {
+                likesCount += 1;
+                mylikes.remLike(widget.postId);
+                Provider.of<ItemsModel>(context, listen: false)
+                    .addLike(widget.postId);
+              } else {
+                likesCount -= 1;
+                mylikes.addLike(widget.postId);
+                Provider.of<ItemsModel>(context, listen: false)
+                    .removeLike(widget.postId);
+              }
+            },
+            child: mylikes.myLikes.contains(widget.postId)
                 ? const Icon(Icons.thumb_up, size: 12, color: Colors.blue)
                 : const Icon(
                     Icons.thumb_up_alt_outlined,
@@ -63,12 +57,13 @@ class _PostLikeState extends State<PostLike> {
             child: SizedBox(
               width: 5,
               child: Text(
-                "${like ? likesCount : likesCount - 1}",
+                "$likesCount",
                 style: const TextStyle(fontSize: 10),
                 maxLines: 1,
               ),
             ),
           ),
+
           // false
           //     ? const Icon(
           //         Icons.delete,

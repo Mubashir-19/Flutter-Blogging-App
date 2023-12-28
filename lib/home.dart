@@ -1,13 +1,11 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:se_project/main.dart';
 
 import 'package:se_project/widgets/account.dart';
 import 'package:se_project/widgets/createBlog.dart';
 import 'package:se_project/widgets/searchpage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'widgets/HomeFeed.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 // import 'widgets/tags.dart';
 
@@ -28,52 +26,50 @@ class Home extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<Home> createState() => _HomeState();
+  State<Home> createState() => HomeState();
 }
 
-class _HomeState extends State<Home> {
+class HomeState extends State<Home> {
   int selectedBottomButton = 0;
   late Future<void> asyncInitialization;
   late var items = [];
+
   @override
   void initState() {
-    // print('${dotenv.env['host']}');
-
-    // TODO: implement initState
     super.initState();
 
-    asyncInitialization = getItems();
+    asyncInitialization = initialize();
   }
 
-  List<String> myLikes = [];
-  Future<void> getItems() async {
-    final prefs = await SharedPreferences.getInstance();
-    var response = await http.get(Uri.parse("${dotenv.env['host']}/getall"));
+  Future<void> initialize() async {
+    await Provider.of<ItemsModel>(context, listen: false)
+        .getItems(widget.authorid);
+    // Future.delayed(const Duration(seconds: 5), () {
+    items = (context.mounted)
+        ? Provider.of<ItemsModel>(context, listen: false).items
+        : [];
+    // print("Items: $items ${context.mounted} ");
 
-    // print(response);
-    // await Future.delayed(const Duration(seconds: 3));
-    if (response.statusCode == 200) {
-      items = json.decode(response.body);
+    List<String> myLikes = [];
 
-      for (var item in items) {
-        if (item["likes"].contains(widget.authorid)) {
-          myLikes.add(item["id"]);
-        }
+    for (var item in items) {
+      if (item["likes"].contains(widget.authorid)) {
+        myLikes.add(item["id"]);
       }
-      prefs.setStringList('likes', myLikes);
-
-      // print(items);
-    } else {
-      items = [];
-      // asyncInitialization.onError((error, stackTrace) => "Offline");
     }
+    // print("My Likes: $myLikes ${context.mounted} ");
+    if (context.mounted) {
+      Provider.of<LikesModel>(context, listen: false).addAllLikes(myLikes);
+    }
+    // print(Provider.of<LikesModel>(context).myLikes);
+    // });
   }
 
-  void pushItem(dynamic a) async {
-    setState(() {
-      items.add(a);
-    });
-  }
+  // void pushItem(dynamic a) async {
+  //   setState(() {
+  //     items.add(a);
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +97,6 @@ class _HomeState extends State<Home> {
               context,
               MaterialPageRoute(
                 builder: (context) => CreateBlog(
-                  pushItem: pushItem,
                   author: widget.username,
                   authorid: widget.authorid,
                 ),
@@ -146,15 +141,12 @@ class _HomeState extends State<Home> {
                     });
                   },
                   children: [
-                    HomeFeed(items: items, myLikes: myLikes),
-                    SearchPage(
-                      items: items,
-                    ),
+                    HomeFeed(),
+                    SearchPage(),
                     Account(
                       email: widget.email,
                       username: widget.username,
-                      items: items.where(
-                          (element) => element["authorid"] == widget.authorid),
+                      authorid: widget.authorid,
                     )
                   ],
                 ),

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:se_project/main.dart';
 import 'package:se_project/widgets/postwidget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../classes/comment.dart';
 
 class SearchPage extends StatefulWidget {
-  final dynamic items;
-  const SearchPage({required this.items, super.key});
+  const SearchPage({super.key});
 
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -15,21 +16,18 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   var searchedItems = [];
-  List<String> myLikes = [];
+  var items = [];
   // var widget.items = [];
-  TextEditingController searchtext = TextEditingController(text: '');
 
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
-    // Your function call goes here
-    getData();
+
+    items = Provider.of<ItemsModel>(context, listen: false).items;
   }
 
-  Future<void> getData() async {
-    final prefs = await SharedPreferences.getInstance();
-    myLikes = prefs.getStringList("likes") ?? [];
-  }
+  TextEditingController searchtext = TextEditingController(text: '');
 
   // Future<void> getjson() async {
   //   // final String response =
@@ -52,7 +50,7 @@ class _SearchPageState extends State<SearchPage> {
     keyword = keyword.toLowerCase();
     var temp = [];
 
-    for (var item in widget.items) {
+    for (var item in items) {
       if (item["title"].toLowerCase().contains(keyword) ||
           item["author"].toLowerCase().contains(keyword) ||
           item["text"].toLowerCase().contains(keyword) ||
@@ -126,7 +124,9 @@ class _SearchPageState extends State<SearchPage> {
           itemCount: searchedItems.length,
           itemBuilder: (context, index) {
             return PostWidget(
-              like: myLikes.contains(searchedItems[index]["id"]),
+              like: Provider.of<LikesModel>(context)
+                  .myLikes
+                  .contains(searchedItems[index]["id"]),
               postId: searchedItems[index]["id"],
               description: searchedItems[index]["description"],
               image: searchedItems[index]["img"],

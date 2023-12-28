@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:se_project/main.dart';
 import 'package:se_project/widgets/postwidget.dart';
 import 'package:se_project/widgets/tagbar.dart';
 
 import '../classes/comment.dart';
 
 class HomeFeed extends StatefulWidget {
-  final dynamic items;
-  final List<String> myLikes;
-  const HomeFeed({required this.myLikes, this.items, super.key});
+  const HomeFeed({super.key});
 
   @override
   State<HomeFeed> createState() => _HomeFeedState();
@@ -15,19 +15,12 @@ class HomeFeed extends StatefulWidget {
 
 class _HomeFeedState extends State<HomeFeed> {
   // var items = [];
-  var _tagItems = [];
+  late var _tagItems = [];
   @override
   void initState() {
     super.initState();
     // Your function call goes here
-    getjson();
-  }
-
-  Future<void> getjson() async {
-    setState(() {
-      _tagItems = widget.items;
-      // for (var item in items) print(item["id"]);
-    });
+    _tagItems = Provider.of<ItemsModel>(context, listen: false).items;
   }
 
   void selectedTab(String tag) {
@@ -35,11 +28,11 @@ class _HomeFeedState extends State<HomeFeed> {
 
     // print(widget.items);
     if (tag == "for you") {
-      temp = widget.items;
+      temp = _tagItems;
 
       // print(temp);
     } else {
-      for (var item in widget.items) {
+      for (var item in _tagItems) {
         if (item["title"].toLowerCase().contains(tag) ||
             item["author"].toLowerCase().contains(tag) ||
             item["text"].toLowerCase().contains(tag) ||
@@ -57,6 +50,7 @@ class _HomeFeedState extends State<HomeFeed> {
 
   @override
   Widget build(BuildContext context) {
+    // print(Provider.of<LikesModel>(context).myLikes);
     return Column(
       children: [
         Padding(
@@ -100,7 +94,9 @@ class _HomeFeedState extends State<HomeFeed> {
           itemCount: _tagItems.length,
           itemBuilder: (context, index) {
             return PostWidget(
-              like: widget.myLikes.contains(_tagItems[index]["id"]),
+              like: Provider.of<LikesModel>(context)
+                  .myLikes
+                  .contains(_tagItems[index]["id"]),
               postId: _tagItems[index]["id"],
               image: _tagItems[index]["img"],
               description: _tagItems[index]["description"],

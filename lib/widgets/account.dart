@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:se_project/main.dart';
 import 'package:se_project/widgets/postwidget.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Account extends StatefulWidget {
   final String email;
   final String username;
-  final dynamic items;
+  final String authorid;
   const Account(
       {super.key,
-      required this.items,
+      required this.authorid,
       required this.username,
       required this.email});
 
@@ -18,16 +19,15 @@ class Account extends StatefulWidget {
 
 class _AccountState extends State<Account> {
   List<String> myLikes = [];
+  dynamic items;
   @override
   void initState() {
     super.initState();
     // Your function call goes here
-    getData();
-  }
-
-  Future<void> getData() async {
-    final prefs = await SharedPreferences.getInstance();
-    myLikes = prefs.getStringList("likes") ?? [];
+    myLikes = Provider.of<LikesModel>(context, listen: false).myLikes;
+    items = Provider.of<ItemsModel>(context, listen: false)
+        .items
+        .where((element) => element["authorid"] == widget.authorid);
   }
 
   @override
@@ -78,7 +78,7 @@ class _AccountState extends State<Account> {
                 fontSize: 10,
                 fontWeight: FontWeight.bold)),
         ...[
-          for (var item in widget.items)
+          for (var item in items)
             PostWidget(
               like: myLikes.contains(item["id"]),
               postId: item["id"],

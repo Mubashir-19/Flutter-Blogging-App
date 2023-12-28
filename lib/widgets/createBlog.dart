@@ -4,20 +4,18 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
+import 'package:se_project/main.dart';
 import 'package:se_project/widgets/blogtext.dart';
 import 'package:se_project/widgets/imagePicker.dart';
 
 class CreateBlog extends StatelessWidget {
   final String author;
   final String authorid;
-  final Function pushItem;
-  CreateBlog(
-      {super.key,
-      required this.author,
-      required this.authorid,
-      required this.pushItem});
+
+  CreateBlog({super.key, required this.author, required this.authorid});
   final GlobalKey<FormState> _registerkey = GlobalKey<FormState>();
 
   TextEditingController title = TextEditingController(text: '');
@@ -227,7 +225,8 @@ class CreateBlog extends StatelessWidget {
                         var a = jsonDecode(response.body);
                         // print(response.body);
                         if (response.statusCode == 200) {
-                          pushItem(a);
+                          Provider.of<ItemsModel>(context).addItem(a);
+                          // pushItem(a);
                           showAlert();
                         } else {}
 //                         String currentDirectory = Directory.current.path;

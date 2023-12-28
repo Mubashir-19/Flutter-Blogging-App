@@ -5,7 +5,8 @@ const User = require("./Schema/User")
 const Post = require("./Schema/BlogPost")
 // const sharp = require('sharp');
 const port = 4000; // You can choose any available port
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
+const BlogPost = require('./Schema/BlogPost');
 // mongoose.connect("")
 // Middleware to parse JSON data
 
@@ -68,7 +69,23 @@ app.post('/signin', async (req, res) => {
 });
 
 app.post("/updateLikes", async (req, res) => {
-  console.log(req.body)
+  // console.log(req.body)
+  const postId = req.body.postid;
+  const authorId = req.body.authorid;
+  
+  const result = await BlogPost.updateOne(
+    { id: postId },
+    req.body.operation === "remove" ? { $pull: { likes: authorId } } : {$addToSet: {likes: authorId}}
+  );
+  
+  console.log(`Author id ${authorId}, Operation: ${req.body.operation}`);
+  if (result.nModified > 0) {
+    res.status(200).send("Removed")
+    // console.log(`Removed like for post with id ${postId}`);
+  } else {
+    console.log(`Author with id ${authorId} has not liked the post`);
+    res.status(201).send("Author with id "+authorId+" has not liked the post")
+  }
 })
 
 app.post("/createpost", async (req, res) => {

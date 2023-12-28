@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:se_project/widgets/PostLike.dart';
+import 'package:provider/provider.dart';
+import 'package:se_project/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../classes/comment.dart';
@@ -15,7 +16,6 @@ class PostWidget extends StatelessWidget {
   final String image;
   // final List<String> tags;
   final String id;
-  final DateTime date = DateTime.now();
   final List<dynamic> likes;
   final List<Comment> comments;
 
@@ -33,21 +33,12 @@ class PostWidget extends StatelessWidget {
     required this.text,
   });
 
-  void updateLikes(bool like) async {
-    final prefs = await SharedPreferences.getInstance();
-    List<String> myLikes = prefs.getStringList("likes") ?? [];
-
-    if (like && !myLikes.contains(postId)) {
-      myLikes.add(postId);
-    } else if (!like && myLikes.contains(postId)) {
-      myLikes.remove(postId);
-    }
-    prefs.setStringList("likes", myLikes);
-    // print(myLikes);
-  }
-
+  //   void setLike() async {
   @override
   Widget build(BuildContext context) {
+    var likemodel = Provider.of<LikesModel>(context);
+    var itemmodel = Provider.of<ItemsModel>(context);
+    // print("Rebuild");
     return InkWell(
       onTap: () => {
         Navigator.push(
@@ -158,14 +149,50 @@ class PostWidget extends StatelessWidget {
                                       )),
                                 ],
                               ),
-                              PostLike(
-                                updateLike: updateLikes,
-                                key: Key(postId),
-                                id: postId,
-                                like: like,
-                                likesCount: likes.length,
-                                authorid: id,
-                              ),
+                              Padding(
+                                  padding: EdgeInsets.only(
+                                      right: MediaQuery.of(context).size.width *
+                                          0.2),
+                                  child: Row(children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        if (likemodel.myLikes
+                                            .contains(postId)) {
+                                          likemodel.remLike(postId);
+                                          itemmodel.removeLike(postId, id);
+                                        } else {
+                                          likemodel.addLike(postId);
+                                          itemmodel.addLike(postId, id);
+                                        }
+                                      },
+                                      child: likemodel.myLikes.contains(postId)
+                                          ? const Icon(Icons.thumb_up,
+                                              size: 12, color: Colors.blue)
+                                          : const Icon(
+                                              Icons.thumb_up_alt_outlined,
+                                              size: 12,
+                                              color: Colors.white70,
+                                            ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 5),
+                                      child: SizedBox(
+                                        width: 5,
+                                        child: Text(
+                                          "${itemmodel.items.firstWhere((element) => element["id"] == postId)["likes"].length}",
+                                          style: const TextStyle(fontSize: 10),
+                                          maxLines: 1,
+                                        ),
+                                      ),
+                                    ),
+                                    // false
+                                    //     ? const Icon(
+                                    //         Icons.delete,
+                                    //         size: 12,
+                                    //         color: Colors.white70,
+                                    //       )
+                                    //     : const SizedBox.shrink()
+                                  ]))
                             ],
                           ),
                         ),
