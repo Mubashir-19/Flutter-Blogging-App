@@ -1,13 +1,14 @@
 const express = require('express');
 const app = express();
-const cloudinary = require('cloudinary').v2;
+// const cloudinary = require('cloudinary').v2;
 const User = require("./Schema/User")
 const Post = require("./Schema/BlogPost")
 // const sharp = require('sharp');
-const port = 4000; // You can choose any available port
 const mongoose = require("mongoose");
-const BlogPost = require('./Schema/BlogPost');
+const dotenv = require("dotenv")
+dotenv.config();
 // mongoose.connect("")
+let mongooseConnected = false;
 // Middleware to parse JSON data
 
 mongoose.connect('mongodb+srv://mubashir:smiu123@cluster0.yrrns.mongodb.net/blog?retryWrites=true&w=majority')
@@ -20,11 +21,11 @@ mongoose.connect('mongodb+srv://mubashir:smiu123@cluster0.yrrns.mongodb.net/blog
     console.error('Error connecting to MongoDB:', error);
   });
 
-cloudinary.config({
-  cloud_name: 'dgixhggt0',
-  api_key: '562691868772357',
-  api_secret: '8OZ2vxLiWd_f3hVMDM-mBlIloA0',
-});
+// cloudinary.config({
+//   cloud_name: 'dgixhggt0',
+//   api_key: '562691868772357',
+//   api_secret: '8OZ2vxLiWd_f3hVMDM-mBlIloA0',
+// });
 
 function generateUniqueId() {
   const timestamp = new Date().getTime().toString(36);
@@ -32,17 +33,17 @@ function generateUniqueId() {
 
   return `${timestamp}-${randomString}`;
 }
-let mongooseConnected = false;
 
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 
 
+app.get("/", (req,res) => res.send("Working"))
 // Define a route for /signin
 app.post('/signin', async (req, res) => {
   if (!mongooseConnected) return res.status(500).send("Database error")
-  
+
   const user = await User.findOne({
     $or: [
       { email: req.body.email },
@@ -54,12 +55,12 @@ app.post('/signin', async (req, res) => {
   if (user == null) {
 
     res.status(404).send("User not found")
-  }else {
+  } else {
     console.log(user);
     if (user.password == req.body.password) {
-
-      res.status(200).json({username: user.username, id: user.id, email: user.email})
-    }else {
+      const avatar = user.avatar ?? '';
+      res.status(200).json({ username: user.username, id: user.id, email: user.email, avatar: avatar })
+    } else {
       res.status(401).send("Incorrect Password")
 
     }
@@ -72,28 +73,28 @@ app.post("/updateLikes", async (req, res) => {
   // console.log(req.body)
   const postId = req.body.postid;
   const authorId = req.body.authorid;
-  
-  const result = await BlogPost.updateOne(
+
+  const result = await Post.updateOne(
     { id: postId },
-    req.body.operation === "remove" ? { $pull: { likes: authorId } } : {$addToSet: {likes: authorId}}
+    req.body.operation === "remove" ? { $pull: { likes: authorId } } : { $addToSet: { likes: authorId } }
   );
-  
+
   console.log(`Author id ${authorId}, Operation: ${req.body.operation}`);
   if (result.nModified > 0) {
     res.status(200).send("Removed")
     // console.log(`Removed like for post with id ${postId}`);
   } else {
     console.log(`Author with id ${authorId} has not liked the post`);
-    res.status(201).send("Author with id "+authorId+" has not liked the post")
+    res.status(201).send("Author with id " + authorId + " has not liked the post")
   }
 })
 
 app.post("/createpost", async (req, res) => {
-  const {author, authorid, description, title, text, img} = req.body;
+  const { author, authorid, description, title, text, img } = req.body;
   if (!mongooseConnected) return res.status(500).send("Database error")
   const uniqueId = generateUniqueId();
   try {
-    const post = new Post({author: author, authorid: authorid, description: description, img: img, text: text, title: title, id: uniqueId , likes: [authorid]})
+    const post = new Post({ author: author, authorid: authorid, description: description, img: img, text: text, title: title, id: uniqueId, likes: [authorid] })
 
     await post.save();
     // const result = await cloudinary.uploader.upload(req.body.image, {
@@ -113,9 +114,33 @@ app.post("/createpost", async (req, res) => {
 app.get("/getall", async (req, res) => {
   if (!mongooseConnected) return res.status(500).send("Database error")
 
-    const posts = await Post.find();
-    
-    res.json(posts);
+  const posts = await Post.find().lean();
+
+  const users = {};
+
+  for (let index = 0; index < posts.length; index++) {
+    const authorId = posts[index]["authorid"];
+    let author = posts[index]["author"];
+    // Check if user with this ID has already been fetched
+    if (!users[authorId]) {
+      const user = await User.findOne({ id: authorId });
+      author = author == user.username ? author : user.username;
+      // If the user is found, store it in the users object
+      if (user) {
+        users[authorId] = user.avatar ?? '';
+      }
+    }
+
+    // If user is found, set the avatar field in the post
+    if (users[authorId]) {
+      // console.log("avatar: ", users[authorId]);
+      posts[index]["avatar"] = users[authorId];
+      posts[index]["author"] = author;
+      
+    }
+  }
+  // console.log(posts);
+  res.json(posts);
 })
 
 
@@ -128,6 +153,15 @@ app.post('/deletePost', async (req, res) => {
 
   console.log(req.body);
 
+})
+
+app.post('/updateAvatar', async (req, res) => {
+  console.log(req.body)
+  if (!mongooseConnected) return res.status(500).send("Database error");
+
+  await User.updateOne({ id: req.body.id, }, { $set: { avatar: req.body.avatar } })
+
+  res.send("ok");
 })
 
 
@@ -150,6 +184,6 @@ app.post('/signup', async (req, res) => {
 });
 
 // Start the server
-app.listen("4000", () => {
-  console.log(`Server is running on port ${port}`);
+app.listen(process.env.PORT || "4000", () => {
+  console.log(`Server is running`);
 });

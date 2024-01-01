@@ -94,19 +94,8 @@ class MyMaterialStateColor extends MaterialStateColor {
 
   @override
   Color resolve(Set<MaterialState> states) {
-    if (states.contains(MaterialState.pressed)) {
-      return Color.fromARGB(255, 207, 207, 207); // Color when pressed
-    }
-    if (states.contains(MaterialState.hovered)) {
-      return Color.fromARGB(255, 207, 207, 207); // Color when hovered
-    }
-    if (states.contains(MaterialState.focused)) {
-      return Color.fromARGB(255, 207, 207, 207); // Color when focused
-    }
-    if (states.contains(MaterialState.disabled)) {
-      return Color.fromARGB(255, 207, 207, 207); // Color when disabled
-    }
-    return const Color(_defaultColor); // Default color when no state is active
+    return Color.fromARGB(
+        255, 30, 29, 29); // Default color when no state is active
   }
 }
 
@@ -241,10 +230,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           textSelectionTheme: const TextSelectionThemeData(
               cursorColor: Color.fromARGB(82, 169, 169, 169)),
           textTheme: const TextTheme(
-            bodyMedium:
-                TextStyle(color: Colors.white), // Set the default text color
+            bodyMedium: TextStyle(
+                color: Color.fromARGB(
+                    255, 19, 33, 57)), // Set the default text color
           ),
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color.fromARGB(255, 70, 99, 172)),
           useMaterial3: true,
         ),
         home: SplashScreen(statusBarHeight: statusBarHeight));
@@ -267,22 +258,12 @@ class _SplashScreenState extends State<SplashScreen> {
   late String email = '';
   late String username = '';
   late String authorid = '';
-
+  late String avatar = '';
   @override
   void initState() {
     super.initState();
 
     checkLoginStatus();
-    Timer(const Duration(seconds: 2), () {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (_) => email != '' && username != '' && authorid != ''
-              ? Home(
-                  statusBarHeight: widget.statusBarHeight,
-                  email: email,
-                  username: username,
-                  authorid: authorid)
-              : Auth()));
-    });
   }
 
   Future<void> checkLoginStatus() async {
@@ -291,17 +272,30 @@ class _SplashScreenState extends State<SplashScreen> {
     email = prefs.getString('email') ?? '';
     username = prefs.getString('username') ?? '';
     authorid = prefs.getString('authorid') ?? '';
+    avatar = prefs.getString('avatar') ?? '';
+
+    Timer(const Duration(seconds: 2), () {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (_) => email != '' && username != '' && authorid != ''
+              ? Home(
+                  statusBarHeight: widget.statusBarHeight,
+                  email: email,
+                  username: username,
+                  authorid: authorid,
+                  avatar: avatar)
+              : Auth()));
+    });
     // print(items);
   }
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: Colors.white12,
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 200, 217, 237),
       body: Center(
-          child: CircularProgressIndicator(
-        backgroundColor: Color.fromARGB(221, 86, 86, 86),
-        color: Colors.white70,
+          child: Image.asset(
+        'images/logo.png',
+        height: 100,
       )),
     );
   }

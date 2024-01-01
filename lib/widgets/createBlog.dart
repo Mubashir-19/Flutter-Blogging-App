@@ -107,16 +107,16 @@ class CreateBlog extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black87,
-        actionsIconTheme: const IconThemeData(color: Colors.white),
-        iconTheme: const IconThemeData(color: Colors.white),
-      ),
+          // backgroundColor: const Color.fromARGB(255, 228, 240, 248),
+          // actionsIconTheme: const IconThemeData(color: Colors.white),
+          // iconTheme: const IconThemeData(color: Colors.white),
+          ),
       // backgroundColor: Colors.black38,
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         padding: const EdgeInsets.only(right: 15, left: 15),
-        color: Colors.black87,
+        // color: Color.fromARGB(255, 219, 219, 219),
         child: Form(
             key: _registerkey,
             child: ListView(
@@ -128,7 +128,8 @@ class CreateBlog extends StatelessWidget {
                 ),
                 TextFormField(
                   controller: title,
-                  style: const TextStyle(color: Colors.white70),
+                  style: const TextStyle(
+                      color: Color.fromARGB(255, 219, 219, 219)),
                   decoration: const InputDecoration(
                     hintStyle: TextStyle(color: Colors.white38),
                     hintText: 'Enter Blog Title',
@@ -142,7 +143,8 @@ class CreateBlog extends StatelessWidget {
                 ),
                 TextFormField(
                   controller: description,
-                  style: const TextStyle(color: Colors.white70),
+                  style: const TextStyle(
+                      color: Color.fromARGB(255, 219, 219, 219)),
                   decoration: const InputDecoration(
                     hintStyle: TextStyle(color: Colors.white38),
                     hintText: 'Enter Blog Description',
@@ -167,7 +169,7 @@ class CreateBlog extends StatelessWidget {
                 // TextFormField(
                 //   controller: text,
                 //   obscureText: true,
-                //   style: const TextStyle(color: Colors.white70),
+                //   style: const TextStyle(color: Color.fromARGB(255, 219, 219, 219)),
                 //   decoration: const InputDecoration(
                 //     hintStyle: TextStyle(color: Colors.white38),
                 //     hintText: 'Enter Blog text',

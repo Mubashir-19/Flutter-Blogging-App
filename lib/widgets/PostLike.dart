@@ -16,7 +16,6 @@ class _PostLikeState extends State<PostLike> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     likesCount = widget.likesCount;
@@ -49,7 +48,7 @@ class _PostLikeState extends State<PostLike> {
                 : const Icon(
                     Icons.thumb_up_alt_outlined,
                     size: 12,
-                    color: Colors.white70,
+                    color: Color.fromARGB(255, 219, 219, 219),
                   ),
           ),
           Padding(
@@ -68,7 +67,7 @@ class _PostLikeState extends State<PostLike> {
           //     ? const Icon(
           //         Icons.delete,
           //         size: 12,
-          //         color: Colors.white70,
+          //         color: Color.fromARGB(255, 219, 219, 219),
           //       )
           //     : const SizedBox.shrink()
         ]));

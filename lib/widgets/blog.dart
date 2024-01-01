@@ -77,10 +77,10 @@ class _BlogState extends State<Blog> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromRGBO(255, 255, 255, 0.102),
+      backgroundColor: const Color.fromARGB(255, 228, 240, 248),
       appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(255, 255, 255, 0),
-        foregroundColor: Colors.white70,
+        backgroundColor: const Color.fromARGB(255, 228, 240, 248),
+        foregroundColor: Color.fromARGB(255, 19, 33, 57),
         title: Text(
           widget.title,
           maxLines: 2,
@@ -99,14 +99,16 @@ class _BlogState extends State<Blog> {
               ),
               child: Text(
                 "Blog by",
-                style: TextStyle(fontSize: 10, color: Colors.white70),
+                style: TextStyle(
+                    fontSize: 10, color: Color.fromARGB(255, 19, 33, 57)),
               ),
             ),
             Row(children: [
-              const Icon(Icons.account_circle, color: Colors.white70),
+              const Icon(Icons.account_circle,
+                  color: Color.fromARGB(255, 19, 33, 57)),
               Text(
                 widget.author,
-                style: const TextStyle(color: Colors.white70),
+                style: const TextStyle(color: Color.fromARGB(255, 19, 33, 57)),
               )
             ]),
             const SizedBox(height: 20),

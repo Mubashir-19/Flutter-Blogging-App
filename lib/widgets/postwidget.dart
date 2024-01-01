@@ -14,6 +14,7 @@ class PostWidget extends StatelessWidget {
   final bool like;
   final String description;
   final String image;
+  final String avatar;
   // final List<String> tags;
   final String id;
   final List<dynamic> likes;
@@ -21,6 +22,7 @@ class PostWidget extends StatelessWidget {
 
   PostWidget({
     super.key,
+    required this.avatar,
     required this.like,
     required this.postId,
     required this.image,
@@ -59,7 +61,7 @@ class PostWidget extends StatelessWidget {
           padding: const EdgeInsets.only(left: 10),
           decoration: const BoxDecoration(
               border: Border(
-            bottom: BorderSide(color: Colors.white12),
+            bottom: BorderSide(color: Color.fromARGB(255, 186, 201, 217)),
             // top: BorderSide(color: Colors.white12)
           )),
           child: Row(
@@ -67,19 +69,22 @@ class PostWidget extends StatelessWidget {
               Expanded(
                 flex: 3,
                 child: SizedBox(
-                  height: 60,
+                  height: 65,
                   // decoration: BoxDecoration(
                   //   border: Border.all(color: Colors.black, width: 2.0),
                   // ),
-                  child: Image(
-                    image: NetworkImage(image),
-                    fit: BoxFit.fitHeight,
-                    alignment: Alignment.topCenter,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10.0),
+                    child: Image(
+                      image: NetworkImage(image),
+                      fit: BoxFit.cover,
+                      alignment: Alignment.center,
+                    ),
                   ),
                 ),
                 //   child: Icon(
                 //     Icons.image,
-                //     color: Colors.white70,
+                //     color: Color.fromARGB(255, 219, 219, 219),
                 //     size: 50,
                 //   ),
               ),
@@ -106,7 +111,7 @@ class PostWidget extends StatelessWidget {
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 2,
                                     style: const TextStyle(
-                                        color: Colors.white70,
+                                        color: Color.fromARGB(255, 31, 31, 31),
                                         fontWeight: FontWeight.bold,
                                         fontSize: 10),
                                   ),
@@ -119,7 +124,8 @@ class PostWidget extends StatelessWidget {
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
                                             fontSize: 7,
-                                            color: Colors.white70)))
+                                            color: Color.fromARGB(
+                                                255, 31, 31, 31))))
                               ],
                             ),
                           )),
@@ -132,12 +138,17 @@ class PostWidget extends StatelessWidget {
                             children: [
                               Row(
                                 children: [
-                                  const Icon(
-                                    Icons.account_circle_sharp,
-                                    size: 12,
-                                    weight: 1,
-                                    color: Colors.white70,
-                                  ),
+                                  avatar == ''
+                                      ? const Icon(
+                                          Icons.account_circle_sharp,
+                                          size: 12,
+                                          weight: 1,
+                                          color:
+                                              Color.fromARGB(255, 31, 31, 31),
+                                        )
+                                      : CircleAvatar(
+                                          backgroundImage: NetworkImage(avatar),
+                                          radius: 6),
                                   const SizedBox(
                                     width: 2,
                                   ),
@@ -145,7 +156,7 @@ class PostWidget extends StatelessWidget {
                                       style: const TextStyle(
                                         fontWeight: FontWeight.normal,
                                         fontSize: 8,
-                                        color: Colors.white70,
+                                        color: Color.fromARGB(255, 31, 31, 31),
                                       )),
                                 ],
                               ),
@@ -171,7 +182,8 @@ class PostWidget extends StatelessWidget {
                                           : const Icon(
                                               Icons.thumb_up_alt_outlined,
                                               size: 12,
-                                              color: Colors.white70,
+                                              color: Color.fromARGB(
+                                                  255, 31, 31, 31),
                                             ),
                                     ),
                                     Padding(
@@ -180,7 +192,10 @@ class PostWidget extends StatelessWidget {
                                         width: 5,
                                         child: Text(
                                           "${itemmodel.items.firstWhere((element) => element["id"] == postId)["likes"].length}",
-                                          style: const TextStyle(fontSize: 10),
+                                          style: const TextStyle(
+                                              fontSize: 10,
+                                              color: Color.fromARGB(
+                                                  255, 31, 31, 31)),
                                           maxLines: 1,
                                         ),
                                       ),
@@ -189,7 +204,7 @@ class PostWidget extends StatelessWidget {
                                     //     ? const Icon(
                                     //         Icons.delete,
                                     //         size: 12,
-                                    //         color: Colors.white70,
+                                    //         color: Color.fromARGB(255, 219, 219, 219),
                                     //       )
                                     //     : const SizedBox.shrink()
                                   ]))

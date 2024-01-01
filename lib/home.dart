@@ -14,6 +14,8 @@ class Home extends StatefulWidget {
   final String email;
   final String username;
   final String authorid;
+  final String avatar;
+
   final PageController _pageController = PageController(initialPage: 0);
   // Use the named parameter syntax for the constructor
 
@@ -22,6 +24,7 @@ class Home extends StatefulWidget {
       required this.statusBarHeight,
       required this.email,
       required this.username,
+      required this.avatar,
       required this.authorid})
       : super(key: key);
 
@@ -33,6 +36,7 @@ class HomeState extends State<Home> {
   int selectedBottomButton = 0;
   late Future<void> asyncInitialization;
   late var items = [];
+  late String avatar = '';
 
   @override
   void initState() {
@@ -42,6 +46,7 @@ class HomeState extends State<Home> {
   }
 
   Future<void> initialize() async {
+    avatar = avatar == '' ? widget.avatar : avatar;
     await Provider.of<ItemsModel>(context, listen: false)
         .getItems(widget.authorid);
     // Future.delayed(const Duration(seconds: 5), () {
@@ -119,8 +124,8 @@ class HomeState extends State<Home> {
               // While waiting for the async initialization to complete, show a loading indicator
               return const Center(
                 child: CircularProgressIndicator(
-                  backgroundColor: Color.fromARGB(221, 86, 86, 86),
-                  color: Colors.white70,
+                  backgroundColor: Color.fromARGB(225, 70, 99, 172),
+                  color: Color.fromARGB(255, 200, 217, 237),
                 ),
               );
             } else {
@@ -130,7 +135,7 @@ class HomeState extends State<Home> {
               // If the async initialization is complete, build the actual widget tree
               return Container(
                 padding: EdgeInsets.only(top: widget.statusBarHeight),
-                color: Colors.black87,
+                color: const Color.fromARGB(255, 228, 240, 248),
                 // height: MediaQuery.of(context).size.height * 0.20,
                 child: PageView(
                   // scrollBehavior: CupertinoScrollBehavior(),
@@ -141,13 +146,16 @@ class HomeState extends State<Home> {
                     });
                   },
                   children: [
-                    HomeFeed(),
-                    SearchPage(),
+                    HomeFeed(avatar: avatar, authorid: widget.authorid),
+                    const SearchPage(),
                     Account(
-                      email: widget.email,
-                      username: widget.username,
-                      authorid: widget.authorid,
-                    )
+                        setAvatarHome: (String avatar) {
+                          setState(() => this.avatar = avatar);
+                        },
+                        email: widget.email,
+                        username: widget.username,
+                        authorid: widget.authorid,
+                        avatar: avatar)
                   ],
                 ),
               );
@@ -155,7 +163,7 @@ class HomeState extends State<Home> {
           },
         ),
         bottomNavigationBar: Container(
-          color: Colors.black87,
+          color: const Color.fromARGB(255, 228, 240, 248),
           height: MediaQuery.of(context).size.height * 0.07,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -170,11 +178,11 @@ class HomeState extends State<Home> {
                     ? const Icon(
                         Icons.home,
                         size: 30,
-                        color: Colors.white70,
+                        color: Color.fromARGB(255, 19, 33, 57),
                       )
                     : const Icon(
                         Icons.home_outlined,
-                        color: Colors.white70,
+                        color: Color.fromARGB(255, 19, 33, 57),
                       ),
               ),
               IconButton(
@@ -186,31 +194,41 @@ class HomeState extends State<Home> {
                   icon: selectedBottomButton == 1
                       ? const Icon(
                           Icons.search,
-                          color: Color.fromARGB(255, 233, 233, 233),
+                          color: Color.fromARGB(255, 19, 33, 57),
                           weight: 100,
                           size: 30,
                         )
                       : const Icon(
                           Icons.search,
-                          color: Colors.white70,
+                          color: Color.fromARGB(255, 19, 33, 57),
                         )),
-              IconButton(
-                onPressed: () => {
-                  widget._pageController.animateToPage(2,
-                      duration: const Duration(milliseconds: 500),
-                      curve: Curves.ease)
-                },
-                icon: selectedBottomButton == 2
-                    ? const Icon(
-                        Icons.account_circle,
-                        size: 30,
-                        color: Colors.white70,
-                      )
-                    : const Icon(
-                        Icons.account_circle_outlined,
-                        color: Colors.white70,
-                      ),
-              )
+              avatar == ''
+                  ? IconButton(
+                      onPressed: () => {
+                        widget._pageController.animateToPage(2,
+                            duration: const Duration(milliseconds: 500),
+                            curve: Curves.ease)
+                      },
+                      icon: selectedBottomButton == 2
+                          ? const Icon(
+                              Icons.account_circle,
+                              size: 30,
+                              color: Color.fromARGB(255, 19, 33, 57),
+                            )
+                          : const Icon(
+                              Icons.account_circle_outlined,
+                              color: Color.fromARGB(255, 19, 33, 57),
+                            ),
+                    )
+                  : GestureDetector(
+                      onTap: () => {
+                        widget._pageController.animateToPage(2,
+                            duration: const Duration(milliseconds: 500),
+                            curve: Curves.ease)
+                      },
+                      child: CircleAvatar(
+                          radius: 15, backgroundImage: NetworkImage(avatar)),
+                    )
             ],
           ),
         )

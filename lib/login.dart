@@ -22,9 +22,9 @@ class Login extends StatelessWidget {
           children: <Widget>[
             TextFormField(
               controller: semail,
-              style: const TextStyle(color: Colors.white70),
+              style: const TextStyle(color: Colors.black),
               decoration: const InputDecoration(
-                hintStyle: TextStyle(color: Colors.white38),
+                hintStyle: TextStyle(color: Colors.grey),
                 hintText: 'Enter your email or username',
               ),
               validator: (String? value) {
@@ -36,10 +36,10 @@ class Login extends StatelessWidget {
             ),
             TextFormField(
               controller: spassword,
-              style: const TextStyle(color: Colors.white70),
+              style: const TextStyle(color: Colors.black),
               obscureText: true,
               decoration: const InputDecoration(
-                hintStyle: TextStyle(color: Colors.white38),
+                hintStyle: TextStyle(color: Colors.grey),
                 hintText: 'Enter your Password',
               ),
               validator: (String? value) {
@@ -70,6 +70,7 @@ class Login extends StatelessWidget {
                       var data = json.decode(response.body);
                       SharedPreferences prefs =
                           await SharedPreferences.getInstance();
+                      prefs.setString('avatar', data["avatar"] ?? '');
                       prefs.setString('email', data["email"]);
                       prefs.setString('username', data["username"]);
                       prefs.setString('authorid', data["id"]);

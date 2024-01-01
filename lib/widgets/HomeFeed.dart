@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:se_project/main.dart';
@@ -7,7 +9,9 @@ import 'package:se_project/widgets/tagbar.dart';
 import '../classes/comment.dart';
 
 class HomeFeed extends StatefulWidget {
-  const HomeFeed({super.key});
+  final String avatar;
+  final String authorid;
+  const HomeFeed({super.key, required this.avatar, required this.authorid});
 
   @override
   State<HomeFeed> createState() => _HomeFeedState();
@@ -25,14 +29,14 @@ class _HomeFeedState extends State<HomeFeed> {
 
   void selectedTab(String tag) {
     var temp = [];
-
+    var allItems = Provider.of<ItemsModel>(context, listen: false).items;
     // print(widget.items);
     if (tag == "for you") {
-      temp = _tagItems;
+      temp = allItems;
 
       // print(temp);
     } else {
-      for (var item in _tagItems) {
+      for (var item in allItems) {
         if (item["title"].toLowerCase().contains(tag) ||
             item["author"].toLowerCase().contains(tag) ||
             item["text"].toLowerCase().contains(tag) ||
@@ -55,35 +59,34 @@ class _HomeFeedState extends State<HomeFeed> {
       children: [
         Padding(
           padding: EdgeInsets.only(
-              bottom: 30, top: MediaQuery.of(context).size.height * 0.07),
+              bottom: 20, top: MediaQuery.of(context).size.height * 0.04),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              // Padding(
+              //   padding: EdgeInsets.only(
+              //       left: MediaQuery.of(context).size.width * 0.05),
+              //   child: Image.asset(
+              //     'images/logo.png',
+              //     height: 50,
+              //   ),
+              // ),
               Padding(
                 padding: EdgeInsets.only(
                     left: MediaQuery.of(context).size.width * 0.05),
                 child: const Text(
                   "Home",
-                  style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.w700),
                 ),
               ),
-              // Padding(
-              //   padding: EdgeInsets.only(
-              //       right: MediaQuery.of(context).size.width * 0.05),
-              //   child: const Icon(
-              //     Icons.notifications,
-              //     color: Colors.white70,
-              //   ),
-              // ),
             ],
           ),
         ),
         Container(
           decoration: const BoxDecoration(
-              border: Border(bottom: BorderSide(color: Colors.white10))),
+              border: Border(
+                  bottom:
+                      BorderSide(color: Color.fromARGB(255, 128, 148, 171)))),
           height: 30,
           width: MediaQuery.of(context).size.width,
           child: MyTabBar(selectedTab: selectedTab),
@@ -105,6 +108,9 @@ class _HomeFeedState extends State<HomeFeed> {
               title: _tagItems[index]["title"],
               likes: _tagItems[index]["likes"],
               author: _tagItems[index]["author"],
+              avatar: _tagItems[index]["authorid"] == widget.authorid
+                  ? widget.avatar
+                  : _tagItems[index]["avatar"],
               comments: [
                 Comment(author: "Mubashir", authorid: "1", text: "Some text")
               ],

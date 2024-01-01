@@ -5,8 +5,13 @@ import 'package:image_picker/image_picker.dart';
 
 class ImagePickerWidget extends StatefulWidget {
   final Function(XFile) onImageSelected;
-
-  const ImagePickerWidget({required this.onImageSelected, super.key});
+  final String text;
+  final TextStyle textStyle;
+  const ImagePickerWidget(
+      {required this.onImageSelected,
+      this.text = "Pick Image",
+      this.textStyle = const TextStyle(),
+      super.key});
 
   @override
   State<ImagePickerWidget> createState() => _ImagePickerWidgetState();
@@ -30,18 +35,12 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: image == null
-          ? TextButton(
-              child: Text("Pick Image"),
-              onPressed: pickImage,
-            )
-          : Image.file(
-              File(image!.path),
-              height: 150,
-              width: 150,
-              fit: BoxFit.cover,
-            ),
+    return GestureDetector(
+      onTap: pickImage,
+      child: Text(
+        widget.text,
+        style: widget.textStyle,
+      ),
     );
   }
 }

@@ -9,6 +9,14 @@ class MyTabBar extends StatefulWidget {
 
 class _MyTabBarState extends State<MyTabBar> {
   int selectedTag = 0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // widget.selectedTab(0);
+  }
+
   final tags = [
     "for you",
     "data science",
@@ -52,13 +60,15 @@ class _MyTabBarState extends State<MyTabBar> {
                 // padding:const  EdgeInsets.only(bottom: 20),
                 decoration: selectedTag == index
                     ? const BoxDecoration(
-                        border: Border(bottom: BorderSide(color: Colors.white)))
+                        border: Border(
+                            bottom: BorderSide(
+                                color: Color.fromARGB(255, 219, 219, 219))))
                     : null,
                 margin: const EdgeInsets.only(left: 10, right: 10),
                 child: Text(
                   capitalizeFirstLetter(tags[index]),
                   style: TextStyle(
-                      color: Colors.white70,
+                      color: const Color.fromARGB(255, 31, 31, 31),
                       fontSize: 10,
                       fontWeight: selectedTag == index
                           ? FontWeight.bold

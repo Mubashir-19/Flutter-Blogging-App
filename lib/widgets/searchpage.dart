@@ -70,7 +70,7 @@ class _SearchPageState extends State<SearchPage> {
       children: [
         Padding(
             padding: EdgeInsets.only(
-                bottom: 15, top: MediaQuery.of(context).size.height * 0.07),
+                bottom: 20, top: MediaQuery.of(context).size.height * 0.04),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -79,10 +79,8 @@ class _SearchPageState extends State<SearchPage> {
                         left: MediaQuery.of(context).size.width * 0.05),
                     child: const Text(
                       "Explore",
-                      style: TextStyle(
-                          color: Colors.white70,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 25, fontWeight: FontWeight.w700),
                     ),
                   ),
                 ])),
@@ -100,19 +98,19 @@ class _SearchPageState extends State<SearchPage> {
                   textAlignVertical: TextAlignVertical.center,
                   style: const TextStyle(
                     fontSize: 10,
-                    color: Colors.white70,
+                    color: Color.fromARGB(255, 58, 58, 58),
                   ),
                   decoration: const InputDecoration(
                       prefixIcon: Icon(Icons.search),
                       focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: Color.fromARGB(31, 255, 255, 255),
+                            color: Color.fromARGB(255, 58, 58, 58),
                             style: BorderStyle.solid,
                           ),
                           borderRadius: BorderRadius.all(Radius.circular(5))),
                       border: OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: Color.fromARGB(76, 255, 255, 255),
+                            color: Color.fromARGB(255, 58, 58, 58),
                             style: BorderStyle.solid,
                           ),
                           borderRadius:
@@ -134,6 +132,7 @@ class _SearchPageState extends State<SearchPage> {
               id: searchedItems[index]["authorid"],
               title: searchedItems[index]["title"],
               likes: searchedItems[index]["likes"],
+              avatar: searchedItems[index]["avatar"],
               author: searchedItems[index]["author"],
               comments: [
                 Comment(author: "Mubashir", authorid: "1", text: "Some text")
