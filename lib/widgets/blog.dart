@@ -39,21 +39,21 @@ class _BlogState extends State<Blog> {
                 body.add(Text(
                   temp,
                   style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 30),
+                      fontWeight: FontWeight.w800, fontSize: 40),
                 ));
                 break;
               case "5432>":
                 body.add(Text(
                   temp,
                   style: const TextStyle(
-                      fontWeight: FontWeight.w600, fontSize: 20),
+                      fontWeight: FontWeight.w700, fontSize: 30),
                 ));
                 break;
               case "1010>":
                 body.add(Text(
                   temp,
                   style: const TextStyle(
-                      fontWeight: FontWeight.w100, fontSize: 10),
+                      fontWeight: FontWeight.w500, fontSize: 20),
                 ));
                 break;
             }
@@ -80,29 +80,26 @@ class _BlogState extends State<Blog> {
       backgroundColor: const Color.fromARGB(255, 228, 240, 248),
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 228, 240, 248),
-        foregroundColor: Color.fromARGB(255, 19, 33, 57),
-        title: Text(
-          widget.title,
-          maxLines: 2,
-        ),
       ),
       body: Padding(
         padding: EdgeInsets.only(
             left: MediaQuery.of(context).size.width * 0.05,
-            top: 20,
+            top: 10,
             right: MediaQuery.of(context).size.width * 0.05),
         child: ListView(
           children: [
+            Text(widget.title,
+                style:
+                    const TextStyle(fontSize: 30, fontWeight: FontWeight.w900)),
             const Padding(
-              padding: EdgeInsets.only(
-                left: 4.0,
-              ),
+              padding: EdgeInsets.only(top: 10, left: 4.0),
               child: Text(
                 "Blog by",
                 style: TextStyle(
                     fontSize: 10, color: Color.fromARGB(255, 19, 33, 57)),
               ),
             ),
+            // const SizedBox(height: 10),
             Row(children: [
               const Icon(Icons.account_circle,
                   color: Color.fromARGB(255, 19, 33, 57)),
@@ -111,9 +108,16 @@ class _BlogState extends State<Blog> {
                 style: const TextStyle(color: Color.fromARGB(255, 19, 33, 57)),
               )
             ]),
-            const SizedBox(height: 20),
-            Image(image: NetworkImage(widget.image)),
+
+            Padding(
+              padding: const EdgeInsets.only(top: 20.0, bottom: 20),
+              child: Image(image: NetworkImage(widget.image)),
+            ),
             ...body,
+
+            const SizedBox(
+              height: 100,
+            )
           ],
         ),
       ),

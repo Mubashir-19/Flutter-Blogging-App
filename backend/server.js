@@ -6,7 +6,10 @@ const Post = require("./Schema/BlogPost")
 // const sharp = require('sharp');
 const mongoose = require("mongoose");
 const dotenv = require("dotenv")
+const cors = require("cors");
 dotenv.config();
+
+
 // mongoose.connect("")
 let mongooseConnected = false;
 // Middleware to parse JSON data
@@ -37,7 +40,7 @@ function generateUniqueId() {
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
-
+app.use(cors())
 
 app.get("/", (req,res) => res.send("Working"))
 // Define a route for /signin

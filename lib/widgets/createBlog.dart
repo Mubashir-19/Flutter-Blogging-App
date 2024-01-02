@@ -128,10 +128,11 @@ class CreateBlog extends StatelessWidget {
                 ),
                 TextFormField(
                   controller: title,
-                  style: const TextStyle(
-                      color: Color.fromARGB(255, 219, 219, 219)),
+                  // style: const TextStyle(
+                  //     color: Color.fromARGB(255, 219, 219, 219)),
                   decoration: const InputDecoration(
-                    hintStyle: TextStyle(color: Colors.white38),
+                    hintStyle:
+                        TextStyle(color: Color.fromARGB(255, 160, 160, 160)),
                     hintText: 'Enter Blog Title',
                   ),
                   validator: (String? value) {
@@ -143,10 +144,11 @@ class CreateBlog extends StatelessWidget {
                 ),
                 TextFormField(
                   controller: description,
-                  style: const TextStyle(
-                      color: Color.fromARGB(255, 219, 219, 219)),
+                  // style: const TextStyle(
+                  //     color: Color.fromARGB(255, 219, 219, 219)),
                   decoration: const InputDecoration(
-                    hintStyle: TextStyle(color: Colors.white38),
+                    hintStyle:
+                        TextStyle(color: Color.fromARGB(255, 160, 160, 160)),
                     hintText: 'Enter Blog Description',
                   ),
                   validator: (String? value) {
@@ -227,7 +229,10 @@ class CreateBlog extends StatelessWidget {
                         var a = jsonDecode(response.body);
                         // print(response.body);
                         if (response.statusCode == 200) {
-                          Provider.of<ItemsModel>(context).addItem(a);
+                          if (context.mounted) {
+                            Provider.of<ItemsModel>(context, listen: false)
+                                .addItem(a);
+                          }
                           // pushItem(a);
                           showAlert();
                         } else {}

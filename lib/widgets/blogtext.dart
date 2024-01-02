@@ -57,7 +57,6 @@ class BlogTextState extends State<BlogText> {
         child: TextField(
           maxLines: null,
           style: TextStyle(
-            color: Colors.white,
             fontWeight: a,
             fontSize: fontsize,
           ),
@@ -102,7 +101,7 @@ class BlogTextState extends State<BlogText> {
               onPressed: () =>
                   setTextField("write paragraph", ContentType.paragraph),
               style: TextButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 40, 181, 113),
+                  backgroundColor: const Color(0xFF42CBC8),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 0)),
               child: const Text(
@@ -110,14 +109,14 @@ class BlogTextState extends State<BlogText> {
                 style: TextStyle(
                     color: Colors.white,
                     fontSize: 10,
-                    fontWeight: FontWeight.bold),
+                    fontWeight: FontWeight.w500),
               ),
             ),
             TextButton(
               onPressed: () =>
                   setTextField("write heading", ContentType.heading),
               style: TextButton.styleFrom(
-                  backgroundColor: Color.fromARGB(255, 153, 31, 31),
+                  backgroundColor: const Color(0xFF4d9ed0),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 0)),
               child: const Text(
@@ -125,21 +124,21 @@ class BlogTextState extends State<BlogText> {
                 style: TextStyle(
                     color: Colors.white,
                     fontSize: 10,
-                    fontWeight: FontWeight.bold),
+                    fontWeight: FontWeight.w500),
               ),
             ),
             TextButton(
               onPressed: () =>
                   setTextField("write sub heading", ContentType.subheading),
               style: TextButton.styleFrom(
-                  backgroundColor: Color.fromARGB(255, 45, 70, 169),
+                  backgroundColor: const Color(0xFF4874a7),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 0)),
               child: const Text("Add Sub heading",
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 10,
-                      fontWeight: FontWeight.bold)),
+                      fontWeight: FontWeight.w500)),
             ),
           ],
         ),

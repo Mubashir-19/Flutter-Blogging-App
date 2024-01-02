@@ -139,107 +139,111 @@ class _AccountState extends State<Account> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 10.0),
-      child: ListView(children: [
-        Padding(
-          padding: EdgeInsets.only(
-              bottom: 30, top: MediaQuery.of(context).size.height * 0.07),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width * 0.05),
-                child: Row(
-                  children: [
-                    ClipOval(
-                      child: CircleAvatar(
-                        radius: 30,
-                        backgroundImage: NetworkImage(avatar == ''
-                            ? "https://w7.pngwing.com/pngs/215/58/png-transparent-computer-icons-google-account-scalable-graphics-computer-file-my-account-icon-rim-123rf-symbol-thumbnail.png"
-                            : avatar),
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Container(
-                            height: 15,
-                            width: 60,
-                            decoration: const BoxDecoration(
-                                color: Color.fromARGB(136, 0, 0, 0),
-                                borderRadius: BorderRadius.vertical(
-                                  bottom: Radius.circular(
-                                      100), // Adjust the radius for the half-circle effect
-                                )),
-                            child: Align(
-                              alignment: Alignment.topCenter,
-                              child: ImagePickerWidget(
-                                  onImageSelected: (XFile img) => setImage(img),
-                                  text: "Update",
-                                  textStyle: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 7,
-                                  )
+    return ListView(children: [
+      Padding(
+        padding: EdgeInsets.only(
+            bottom: 30, top: MediaQuery.of(context).size.height * 0.07),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(
+                  left: MediaQuery.of(context).size.width * 0.05),
+              child: Row(
+                children: [
+                  ClipOval(
+                    child: CircleAvatar(
+                      radius: 30,
+                      backgroundImage: NetworkImage(avatar == ''
+                          ? "https://w7.pngwing.com/pngs/215/58/png-transparent-computer-icons-google-account-scalable-graphics-computer-file-my-account-icon-rim-123rf-symbol-thumbnail.png"
+                          : avatar),
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          height: 15,
+                          width: 60,
+                          decoration: const BoxDecoration(
+                              color: Color.fromARGB(136, 0, 0, 0),
+                              borderRadius: BorderRadius.vertical(
+                                bottom: Radius.circular(
+                                    100), // Adjust the radius for the half-circle effect
+                              )),
+                          child: Align(
+                            alignment: Alignment.topCenter,
+                            child: ImagePickerWidget(
+                                onImageSelected: (XFile img) => setImage(img),
+                                text: "Update",
+                                textStyle: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 7,
+                                )
 
-                                  //   "Update",
-                                  //   style: TextStyle(
-                                  //     color: Colors.white,
-                                  //     fontSize: 7,
-                                  //   ),
-                                  ),
-                            ),
+                                //   "Update",
+                                //   style: TextStyle(
+                                //     color: Colors.white,
+                                //     fontSize: 7,
+                                //   ),
+                                ),
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      widget.username,
-                      style: const TextStyle(
-                          color: Colors.black87,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    widget.username,
+                    style: const TextStyle(
+                        color: Colors.black87,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            )
+          ],
         ),
-        // const Text(
-        //   "About me",
-        //   style: TextStyle(
-        //       color: Color.fromARGB(255, 219, 219, 219),
-        //       fontSize: 20,
-        //       fontWeight: FontWeight.bold),
-        // ),
-        const Padding(
+      ),
+      // const Text(
+      //   "About me",
+      //   style: TextStyle(
+      //       color: Color.fromARGB(255, 219, 219, 219),
+      //       fontSize: 20,
+      //       fontWeight: FontWeight.bold),
+      // ),
+      Container(
+        decoration: BoxDecoration(
+            border: Border(
+                top: BorderSide(
+          color: Colors.black45,
+        ))),
+        child: const Padding(
           padding: EdgeInsets.only(top: 10.0, bottom: 5, left: 20),
           child: Text("My Posts",
               style: TextStyle(
                   color: Colors.black87,
-                  fontSize: 15,
+                  fontSize: 30,
                   fontWeight: FontWeight.bold)),
         ),
-        ...[
-          for (var item in items)
-            PostWidget(
-              like: myLikes.contains(item["id"]),
-              postId: item["id"],
-              image: item["img"],
-              description: item["description"],
-              // key: Key(item["id"]),
-              id: item["authorid"],
-              title: item["title"],
-              likes: item["likes"],
-              author: item["author"],
-              avatar: avatar,
-              comments: [],
-              text: item["text"],
-            )
-        ]
-      ]),
-    );
+      ),
+      ...[
+        for (var item in items)
+          PostWidget(
+            like: myLikes.contains(item["id"]),
+            postId: item["id"],
+            image: item["img"],
+            description: item["description"],
+            // key: Key(item["id"]),
+            id: item["authorid"],
+            title: item["title"],
+            likes: item["likes"],
+            author: item["author"],
+            avatar: avatar,
+            comments: [],
+            text: item["text"],
+          )
+      ]
+    ]);
   }
 }

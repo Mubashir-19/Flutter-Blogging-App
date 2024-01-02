@@ -57,7 +57,7 @@ class PostWidget extends StatelessWidget {
       },
       child: Container(
           // margin: const EdgeInsets.only(top: 10, bottom: 10),
-          height: 80,
+          height: 100,
           padding: const EdgeInsets.only(left: 10),
           decoration: const BoxDecoration(
               border: Border(
@@ -69,15 +69,16 @@ class PostWidget extends StatelessWidget {
               Expanded(
                 flex: 3,
                 child: SizedBox(
-                  height: 65,
+                  height: 80,
                   // decoration: BoxDecoration(
                   //   border: Border.all(color: Colors.black, width: 2.0),
                   // ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(5.0),
                     child: Image(
                       image: NetworkImage(image),
                       fit: BoxFit.cover,
+                      height: 80,
                       alignment: Alignment.center,
                     ),
                   ),
@@ -113,7 +114,7 @@ class PostWidget extends StatelessWidget {
                                     style: const TextStyle(
                                         color: Color.fromARGB(255, 31, 31, 31),
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 10),
+                                        fontSize: 12),
                                   ),
                                 ),
                                 SizedBox(
