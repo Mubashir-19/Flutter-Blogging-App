@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:provider/provider.dart';
+import 'package:se_project/auth.dart';
 import 'package:se_project/main.dart';
 import 'package:se_project/widgets/imagePicker.dart';
 import 'package:se_project/widgets/postwidget.dart';
@@ -142,64 +143,85 @@ class _AccountState extends State<Account> {
     return ListView(children: [
       Padding(
         padding: EdgeInsets.only(
-            bottom: 30, top: MediaQuery.of(context).size.height * 0.07),
+            bottom: 30,
+            top: MediaQuery.of(context).size.height * 0.07,
+            left: MediaQuery.of(context).size.width * 0.05,
+            right: MediaQuery.of(context).size.width * 0.05),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Padding(
-              padding: EdgeInsets.only(
-                  left: MediaQuery.of(context).size.width * 0.05),
-              child: Row(
-                children: [
-                  ClipOval(
-                    child: CircleAvatar(
-                      radius: 30,
-                      backgroundImage: NetworkImage(avatar == ''
-                          ? "https://w7.pngwing.com/pngs/215/58/png-transparent-computer-icons-google-account-scalable-graphics-computer-file-my-account-icon-rim-123rf-symbol-thumbnail.png"
-                          : avatar),
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Container(
-                          height: 15,
-                          width: 60,
-                          decoration: const BoxDecoration(
-                              color: Color.fromARGB(136, 0, 0, 0),
-                              borderRadius: BorderRadius.vertical(
-                                bottom: Radius.circular(
-                                    100), // Adjust the radius for the half-circle effect
-                              )),
-                          child: Align(
-                            alignment: Alignment.topCenter,
-                            child: ImagePickerWidget(
-                                onImageSelected: (XFile img) => setImage(img),
-                                text: "Update",
-                                textStyle: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 7,
-                                )
+            Row(
+              children: [
+                ClipOval(
+                  child: CircleAvatar(
+                    radius: 30,
+                    backgroundImage: NetworkImage(avatar == ''
+                        ? "https://w7.pngwing.com/pngs/215/58/png-transparent-computer-icons-google-account-scalable-graphics-computer-file-my-account-icon-rim-123rf-symbol-thumbnail.png"
+                        : avatar),
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        height: 15,
+                        width: 60,
+                        decoration: const BoxDecoration(
+                            color: Color.fromARGB(136, 0, 0, 0),
+                            borderRadius: BorderRadius.vertical(
+                              bottom: Radius.circular(
+                                  100), // Adjust the radius for the half-circle effect
+                            )),
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          child: ImagePickerWidget(
+                              onImageSelected: (XFile img) => setImage(img),
+                              text: "Update",
+                              textStyle: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 7,
+                              )
 
-                                //   "Update",
-                                //   style: TextStyle(
-                                //     color: Colors.white,
-                                //     fontSize: 7,
-                                //   ),
-                                ),
-                          ),
+                              //   "Update",
+                              //   style: TextStyle(
+                              //     color: Colors.white,
+                              //     fontSize: 7,
+                              //   ),
+                              ),
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    widget.username,
-                    style: const TextStyle(
-                        color: Colors.black87,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ],
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  widget.username,
+                  style: const TextStyle(
+                      color: Colors.black87,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            // const Spacer(),
+            IconButton(
+              onPressed: () async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                await prefs.remove('authorid');
+                await prefs.remove('email');
+                await prefs.remove('username');
+                if (context.mounted) {
+                  Provider.of<ItemsModel>(context, listen: false).clear();
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          const SplashScreen(), // Replace AuthPage with the actual name of your authentication page
+                    ),
+                  );
+                }
+              },
+              icon: const Icon(
+                Icons.logout,
+                color: Colors.black,
               ),
             )
           ],

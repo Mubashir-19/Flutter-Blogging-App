@@ -41,6 +41,10 @@ class ItemsModel extends ChangeNotifier {
 
   List<dynamic> get items => _items;
 
+  void clear() {
+    _items.clear();
+  }
+
   void addItem(var item) {
     _items.add(item);
   }
@@ -217,7 +221,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    double statusBarHeight = MediaQuery.of(context).padding.top;
     return MaterialApp(
         title: 'SE Project',
         theme: ThemeData(
@@ -238,13 +241,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               seedColor: const Color.fromARGB(255, 70, 99, 172)),
           useMaterial3: true,
         ),
-        home: SplashScreen(statusBarHeight: statusBarHeight));
+        home: const SplashScreen());
   }
 }
 
 class SplashScreen extends StatefulWidget {
-  final double statusBarHeight;
-  const SplashScreen({super.key, required this.statusBarHeight});
+  const SplashScreen({
+    super.key,
+  });
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
@@ -278,7 +282,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (_) => email != '' && username != '' && authorid != ''
               ? Home(
-                  statusBarHeight: widget.statusBarHeight,
+                  statusBarHeight: MediaQuery.of(context).padding.top,
                   email: email,
                   username: username,
                   authorid: authorid,

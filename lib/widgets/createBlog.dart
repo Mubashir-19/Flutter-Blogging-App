@@ -122,10 +122,10 @@ class CreateBlog extends StatelessWidget {
             child: ListView(
               children: <Widget>[
                 ImagePickerWidget(
-                  onImageSelected: (XFile image) {
-                    this.image = image;
-                  },
-                ),
+                    onImageSelected: (XFile image) {
+                      this.image = image;
+                    },
+                    text: image == null ? "Pick Image" : "Selected"),
                 TextFormField(
                   controller: title,
                   // style: const TextStyle(

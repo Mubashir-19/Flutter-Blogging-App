@@ -74,13 +74,12 @@ class Login extends StatelessWidget {
                       prefs.setString('email', data["email"]);
                       prefs.setString('username', data["username"]);
                       prefs.setString('authorid', data["id"]);
+
                       if (!context.mounted) return;
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SplashScreen(
-                                  statusBarHeight: 10,
-                                )),
+                            builder: (context) => const SplashScreen()),
                       );
                     } else {
                       print(response.body);

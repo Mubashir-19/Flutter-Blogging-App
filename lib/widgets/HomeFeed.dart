@@ -30,7 +30,6 @@ class _HomeFeedState extends State<HomeFeed> {
   void selectedTab(String tag) {
     var temp = [];
     var allItems = Provider.of<ItemsModel>(context, listen: false).items;
-    // print(widget.items);
     if (tag == "for you") {
       temp = allItems;
 
@@ -96,6 +95,7 @@ class _HomeFeedState extends State<HomeFeed> {
           padding: EdgeInsets.zero,
           itemCount: _tagItems.length,
           itemBuilder: (context, index) {
+            // print(_tagItems[index]["avatar"]);
             return PostWidget(
               like: Provider.of<LikesModel>(context)
                   .myLikes
@@ -110,7 +110,7 @@ class _HomeFeedState extends State<HomeFeed> {
               author: _tagItems[index]["author"],
               avatar: _tagItems[index]["authorid"] == widget.authorid
                   ? widget.avatar
-                  : _tagItems[index]["avatar"],
+                  : _tagItems[index]["avatar"] ?? '',
               comments: [
                 Comment(author: "Mubashir", authorid: "1", text: "Some text")
               ],
