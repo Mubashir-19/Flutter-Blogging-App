@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:se_project/main.dart';
 import 'dart:convert';
 
@@ -57,7 +59,20 @@ class Login extends StatelessWidget {
                   // the form is invalid.
                   if (_signinkey.currentState!.validate()) {
                     // print(semail.text + spassword.text);
-
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return const AlertDialog(
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                CircularProgressIndicator(),
+                                SizedBox(height: 16),
+                                Text('Logging in...'),
+                              ],
+                            ),
+                          );
+                        });
                     var response = await http.post(
                         Uri.parse("${dotenv.env['host']}/signin"),
                         headers: {"Content-Type": "application/json"},
@@ -65,6 +80,10 @@ class Login extends StatelessWidget {
                           "email": semail.text,
                           "password": spassword.text,
                         }));
+
+                    if (context.mounted) {
+                      Navigator.of(context, rootNavigator: true).pop();
+                    }
 
                     if (response.statusCode == 200) {
                       var data = json.decode(response.body);
@@ -81,8 +100,30 @@ class Login extends StatelessWidget {
                         MaterialPageRoute(
                             builder: (context) => const SplashScreen()),
                       );
-                    } else {
-                      print(response.body);
+                    } else if (response.statusCode == 401) {
+                      if (context.mounted) {
+                        QuickAlert.show(
+                            title: "Incorrect Password",
+                            context: context,
+                            type: QuickAlertType.error);
+                      }
+                      // print(response.body);
+                    } else if (response.statusCode == 404) {
+                      if (context.mounted) {
+                        QuickAlert.show(
+                            title: "User Not Found",
+                            context: context,
+                            type: QuickAlertType.error);
+                      }
+                      // print(response.body);
+                    } else if (response.statusCode == 500) {
+                      if (context.mounted) {
+                        QuickAlert.show(
+                            title: "Service down, please try later",
+                            context: context,
+                            type: QuickAlertType.info);
+                      }
+                      // print(response.body);
                     }
 
                     // sendPostRequest();

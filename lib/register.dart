@@ -76,7 +76,20 @@ class Register extends StatelessWidget {
                   // the form is invalid.
                   if (_registerkey.currentState!.validate()) {
                     // print(remail.text + rpassword.text);
-
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return const AlertDialog(
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                CircularProgressIndicator(),
+                                SizedBox(height: 16),
+                                Text('Registering...'),
+                              ],
+                            ),
+                          );
+                        });
                     final response = await http.post(
                       Uri.parse('${dotenv.env['host']}/signup'),
                       headers: {'Content-Type': 'application/json'},
@@ -87,13 +100,20 @@ class Register extends StatelessWidget {
                         // Your request body here
                       }),
                     );
-
+                    if (context.mounted) {
+                      Navigator.of(context, rootNavigator: true).pop();
+                    }
                     if (response.statusCode == 200) {
                       // print('Response: ${response.body}');
                       showAlert();
-                    } else {
-                      print(
-                          'Request failed with status: ${response.statusCode}');
+                    } else if (response.statusCode == 500) {
+                      if (context.mounted) {
+                        QuickAlert.show(
+                            title: "Service down, please try later",
+                            context: context,
+                            type: QuickAlertType.info);
+                      }
+                      // print(response.body);
                     }
                   }
                 },

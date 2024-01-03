@@ -113,7 +113,7 @@ class PostWidget extends StatelessWidget {
                                     maxLines: 2,
                                     style: const TextStyle(
                                         color: Color.fromARGB(255, 31, 31, 31),
-                                        fontWeight: FontWeight.bold,
+                                        fontWeight: FontWeight.w900,
                                         fontSize: 12),
                                   ),
                                 ),
@@ -142,21 +142,21 @@ class PostWidget extends StatelessWidget {
                                   avatar == ''
                                       ? const Icon(
                                           Icons.account_circle_sharp,
-                                          size: 12,
+                                          size: 18,
                                           weight: 1,
                                           color:
                                               Color.fromARGB(255, 31, 31, 31),
                                         )
                                       : CircleAvatar(
                                           backgroundImage: NetworkImage(avatar),
-                                          radius: 6),
+                                          radius: 9),
                                   const SizedBox(
                                     width: 2,
                                   ),
                                   Text(author,
                                       style: const TextStyle(
                                         fontWeight: FontWeight.normal,
-                                        fontSize: 8,
+                                        fontSize: 12,
                                         color: Color.fromARGB(255, 31, 31, 31),
                                       )),
                                 ],
@@ -179,10 +179,10 @@ class PostWidget extends StatelessWidget {
                                       },
                                       child: likemodel.myLikes.contains(postId)
                                           ? const Icon(Icons.thumb_up,
-                                              size: 12, color: Colors.blue)
+                                              size: 15, color: Colors.blue)
                                           : const Icon(
                                               Icons.thumb_up_alt_outlined,
-                                              size: 12,
+                                              size: 15,
                                               color: Color.fromARGB(
                                                   255, 31, 31, 31),
                                             ),
@@ -190,7 +190,7 @@ class PostWidget extends StatelessWidget {
                                     Padding(
                                       padding: const EdgeInsets.only(left: 5),
                                       child: SizedBox(
-                                        width: 5,
+                                        width: 7,
                                         child: Text(
                                           "${itemmodel.items.firstWhere((element) => element["id"] == postId)["likes"].length}",
                                           style: const TextStyle(

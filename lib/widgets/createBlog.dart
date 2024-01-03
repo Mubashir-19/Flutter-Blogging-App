@@ -14,8 +14,13 @@ import 'package:se_project/widgets/imagePicker.dart';
 class CreateBlog extends StatelessWidget {
   final String author;
   final String authorid;
+  final Function getItem;
 
-  CreateBlog({super.key, required this.author, required this.authorid});
+  CreateBlog(
+      {super.key,
+      required this.author,
+      required this.authorid,
+      required this.getItem});
   final GlobalKey<FormState> _registerkey = GlobalKey<FormState>();
 
   TextEditingController title = TextEditingController(text: '');
@@ -101,10 +106,6 @@ class CreateBlog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    void showAlert() {
-      QuickAlert.show(context: context, type: QuickAlertType.success);
-    }
-
     return Scaffold(
       appBar: AppBar(
           // backgroundColor: const Color.fromARGB(255, 228, 240, 248),
@@ -193,8 +194,7 @@ class CreateBlog extends StatelessWidget {
                       // Validate will return true if the form is valid, or false if
                       // the form is invalid.
 
-                      if (_registerkey.currentState!.validate() &&
-                          image != null) {
+                      if (_registerkey.currentState!.validate()) {
                         // print(title.text + description.text);
 
                         // await cropAndCompressImage(image);
@@ -209,8 +209,23 @@ class CreateBlog extends StatelessWidget {
 
                           return;
                         }
-
-                        final img = await uploadImageToCloudinary(image!.path);
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return const AlertDialog(
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    CircularProgressIndicator(),
+                                    SizedBox(height: 16),
+                                    Text('Loading...'),
+                                  ],
+                                ),
+                              );
+                            });
+                        final img = image == null
+                            ? "https://www.seoclerk.com/pics/653973-1pMc8u1548606687.jpg"
+                            : await uploadImageToCloudinary(image!.path);
 
                         final response = await http.post(
                           Uri.parse('${dotenv.env['host']}/createpost'),
@@ -228,14 +243,31 @@ class CreateBlog extends StatelessWidget {
                         // print(response.body);
                         var a = jsonDecode(response.body);
                         // print(response.body);
-                        if (response.statusCode == 200) {
-                          if (context.mounted) {
+                        if (context.mounted) {
+                          if (response.statusCode == 200) {
                             Provider.of<ItemsModel>(context, listen: false)
                                 .addItem(a);
+                            Provider.of<LikesModel>(context, listen: false)
+                                .addLike(a["id"]);
+                            getItem();
+                            Navigator.of(context, rootNavigator: true).pop();
+                            QuickAlert.show(
+                                context: context, type: QuickAlertType.success);
+                            // pushItem(a);
+                          } else {
+                            Navigator.of(context, rootNavigator: true).pop();
+                            Future.delayed(const Duration(milliseconds: 500));
+                            QuickAlert.show(
+                                context: context,
+                                type: QuickAlertType.error,
+                                title: "Error creating blog, please try later");
                           }
-                          // pushItem(a);
-                          showAlert();
-                        } else {}
+                          Navigator.pop(context);
+                        }
+                        // if (context.mounted) {
+                        //   Navigator.of(context, rootNavigator: true).pop();
+                        // }
+                        // Navigator.of(context).pop();
 //                         String currentDirectory = Directory.current.path;
 //                         print(currentDirectory);
 //                         // Create the path to the blogData.json file

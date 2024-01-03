@@ -38,7 +38,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
     return GestureDetector(
       onTap: pickImage,
       child: Text(
-        widget.text,
+        image == null ? widget.text : "Image Selected",
         style: widget.textStyle,
       ),
     );

@@ -56,6 +56,52 @@ class _AccountState extends State<Account> {
     );
   }
 
+  Future<void> makeDatabaseCall() async {
+    final List<String> myLikes = context.mounted
+        ? Provider.of<LikesModel>(context, listen: false).myLikes
+        : [];
+    // final List<String> myDislikes = prefs.getStringList("dislikes") ?? [];
+    final authorid = widget.authorid;
+    if (myLikes == []) return;
+
+    // print(latestLikes);
+    var response = await http.get(Uri.parse("${dotenv.env['host']}/getall"));
+    var items;
+
+    if (response.statusCode == 200) {
+      items = jsonDecode(response.body);
+    } else {
+      items = [];
+    }
+
+    for (var item in items) {
+      if (item["likes"].contains(authorid) && !myLikes.contains(item["id"])) {
+        http.post(
+          Uri.parse('${dotenv.env['host']}/updateLikes'),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({
+            "postid": item["id"],
+            "authorid": authorid,
+            "operation": "remove"
+            // Your request body here
+          }),
+        );
+      } else if (!item["likes"].contains(authorid) &&
+          myLikes.contains(item["id"])) {
+        http.post(
+          Uri.parse('${dotenv.env['host']}/updateLikes'),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({
+            "postid": item["id"],
+            "authorid": authorid,
+            "operation": "add"
+            // Your request body here
+          }),
+        );
+      }
+    }
+  }
+
   Future<String> uploadImageToCloudinary(String path) async {
     File file = File(path);
     Uint8List imageData = await file.readAsBytes();
@@ -205,12 +251,30 @@ class _AccountState extends State<Account> {
             // const Spacer(),
             IconButton(
               onPressed: () async {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return const AlertDialog(
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            CircularProgressIndicator(),
+                            SizedBox(height: 16),
+                            Text('Loggin out...'),
+                          ],
+                        ),
+                      );
+                    });
                 SharedPreferences prefs = await SharedPreferences.getInstance();
                 await prefs.remove('authorid');
                 await prefs.remove('email');
+                await prefs.remove('avatar');
                 await prefs.remove('username');
+                await makeDatabaseCall();
                 if (context.mounted) {
+                  Navigator.of(context, rootNavigator: true).pop();
                   Provider.of<ItemsModel>(context, listen: false).clear();
+                  Provider.of<LikesModel>(context, listen: false).clear();
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
                       builder: (context) =>

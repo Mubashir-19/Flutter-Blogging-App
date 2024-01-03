@@ -50,7 +50,7 @@ app.post('/signin', async (req, res) => {
   const user = await User.findOne({
     $or: [
       { email: req.body.email },
-      { username: req.body.username }
+      { username: req.body.email }
     ]
   });
 
@@ -170,6 +170,18 @@ app.post('/updateAvatar', async (req, res) => {
 
 app.post('/signup', async (req, res) => {
   if (!mongooseConnected) return res.status(500).send("Database error")
+
+  const userAlreadyExist = await User.findOne({
+    $or: [
+      { email: req.body.email },
+      { username: req.body.email }
+    ]
+  });
+
+  if (userAlreadyExist) {
+    res.status(403).send("Already exists");
+    return;
+  }
 
   const user = new User({
     email: req.body.email,

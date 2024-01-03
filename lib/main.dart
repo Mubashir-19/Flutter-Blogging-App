@@ -19,6 +19,11 @@ class LikesModel extends ChangeNotifier {
 
   int get length => _myLikes.length;
 
+  void clear() {
+    _myLikes.clear();
+    // notifyListeners();
+  }
+
   void addLike(String postId) {
     _myLikes.add(postId);
     notifyListeners();
@@ -43,10 +48,12 @@ class ItemsModel extends ChangeNotifier {
 
   void clear() {
     _items.clear();
+    // notifyListeners();
   }
 
   void addItem(var item) {
     _items.add(item);
+    notifyListeners();
   }
 
   // List<String> likes(postid) =>
@@ -119,8 +126,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
   }
 
   @override
@@ -131,11 +138,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       // The app is about to be closed, make a call to the database here
       // For example, you can use a database package like sqflite, firebase, etc.
       // Make sure to handle the database call asynchronously.
-      _makeDatabaseCall();
+      makeDatabaseCall();
     }
   }
 
-  Future<void> _makeDatabaseCall() async {
+  Future<void> makeDatabaseCall() async {
     final prefs = await SharedPreferences.getInstance();
     final List<String> myLikes = context.mounted
         ? Provider.of<LikesModel>(context, listen: false).myLikes

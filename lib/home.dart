@@ -45,6 +45,12 @@ class HomeState extends State<Home> {
     asyncInitialization = initialize();
   }
 
+  void getItem() {
+    setState(() {
+      items = Provider.of<ItemsModel>(context, listen: false).items;
+    });
+  }
+
   Future<void> initialize() async {
     avatar = avatar == '' ? widget.avatar : avatar;
     await Provider.of<ItemsModel>(context, listen: false)
@@ -53,6 +59,7 @@ class HomeState extends State<Home> {
     items = (context.mounted)
         ? Provider.of<ItemsModel>(context, listen: false).items
         : [];
+
     // print("Items: $items ${context.mounted} ");
 
     List<String> myLikes = [];
@@ -60,6 +67,11 @@ class HomeState extends State<Home> {
     for (var item in items) {
       if (item["likes"].contains(widget.authorid)) {
         myLikes.add(item["id"]);
+      }
+
+      if (item["authorid"] == widget.authorid &&
+          item["avatar"] != widget.avatar) {
+        avatar = item["avatar"];
       }
     }
     // print("My Likes: $myLikes ${context.mounted} ");
@@ -102,6 +114,7 @@ class HomeState extends State<Home> {
               context,
               MaterialPageRoute(
                 builder: (context) => CreateBlog(
+                  getItem: getItem,
                   author: widget.username,
                   authorid: widget.authorid,
                 ),
