@@ -2,7 +2,7 @@
 
 ## Table of Contents
 
-1. [Introduction](#introduction)
+1. [Introduction](#1-introduction)
     1. [Purpose](#purpose)
     2. [Scope](#scope)
 2. [Problem Statement](#problem-statement)
@@ -32,7 +32,7 @@
     1. [Social Sharing](#social-sharing)
     2. [Notification System](#notification-system)
 
-## 1. Introduction {#introduction}
+## 1. Introduction 
 
 ### 1.1 Purpose {#purpose}
 The purpose of the Blogging Application is to provide a platform for users to engage with and share technology-based content through blogs.
