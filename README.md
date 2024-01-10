@@ -114,9 +114,6 @@ The proposed Blogging Application offers a user-friendly interface with personal
 ### 7.3 User Acceptance Testing 
 - Gather feedback from users to verify the application meets their expectations.
 
-- You can also see how my application works.
-- link: https://youtu.be/j7AymYZsMnY
-
 ## 8. Future Enhancements 
 
 ### 8.1 Social Sharing
@@ -124,3 +121,6 @@ The proposed Blogging Application offers a user-friendly interface with personal
 
 ### 8.2 Notification System
 - Notify users of new followers, comments, and relevant blog updates.
+
+- You can also see how my application works.
+- link: https://youtu.be/j7AymYZsMnY
