@@ -14,7 +14,7 @@ dotenv.config();
 let mongooseConnected = false;
 // Middleware to parse JSON data
 
-mongoose.connect('mongodb+srv://mubashir:smiu123@cluster0.yrrns.mongodb.net/blog?retryWrites=true&w=majority')
+mongoose.connect(process.env.mongo)
   .then(() => {
     mongooseConnected = true;
     console.log('Connected to MongoDB');
